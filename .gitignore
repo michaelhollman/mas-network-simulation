@@ -28,8 +28,10 @@ local.properties
 
 # Logs
 .log
+debug.log
 
 # misc crap
 thumbs.db
 .DS_Store
 .*.sw?
+Repast.settings
