@@ -8,21 +8,14 @@ import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.graph.Network;
 
-import repast.simphony.context.space.grid.GridFactory;
-import repast.simphony.context.space.grid.GridFactoryFinder;
-import repast.simphony.space.grid.Grid;
-import repast.simphony.space.grid.GridBuilderParameters;
-import repast.simphony.space.grid.SimpleGridAdder;
-import repast.simphony.space.grid.WrapAroundBorders;
 
+public class NetworkContextBuilder extends DefaultContext<FileSharingNode> implements ContextBuilder<FileSharingNode> {
 
-public class NetworkContextBuilder extends DefaultContext<Object> implements ContextBuilder<Object> {
-
-	public Context<Object> build(Context<Object> context) {
+	public Context<FileSharingNode> build(Context<FileSharingNode> context) {
 		context.setId("NetworkSimulation");
-				
-		NetworkBuilder<Object> knownConnectionsNetworkBuilder = new NetworkBuilder<Object>("knownConnections", context, false);
-		Network<Object> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
+		
+		NetworkBuilder<FileSharingNode> knownConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("knownConnections", context, false);
+		Network<FileSharingNode> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		int nodeCount = (Integer) params.getValue("node_count");
