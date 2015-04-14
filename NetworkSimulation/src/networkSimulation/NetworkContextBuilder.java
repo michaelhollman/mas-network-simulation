@@ -1,5 +1,9 @@
 package networkSimulation;
 
+import java.util.ArrayList;
+
+import networkSimulation.config.ContextBuilderBuilder;
+import networkSimulation.config.ContextBuilderBuilderFactory;
 import repast.simphony.context.Context;
 import repast.simphony.context.DefaultContext;
 import repast.simphony.context.space.graph.NetworkBuilder;
@@ -19,21 +23,13 @@ public class NetworkContextBuilder extends DefaultContext<FileSharingNode> imple
 		NetworkBuilder<FileSharingNode> currentConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("currentConnections", context, false);
 		Network<FileSharingNode> currentConnections = currentConnectionsNetworkBuilder.buildNetwork();
 		
-		Parameters params = RunEnvironment.getInstance().getParameters();
-		int nodeCount = (Integer) params.getValue("node_count");
+		ArrayList<FileSharingNode> allNodes = new ArrayList<FileSharingNode>();
 		
-		FileSharingNode last = null;
-		for (int i = 0; i < nodeCount; i++)
-		{
-			NodeConfiguration config = new NodeConfiguration();
-			config.NodeId = i;
-			
-			FileSharingNode n = new FileSharingNode(knownConnections, currentConnections, config);
-			if (last != null) knownConnections.addEdge(last, n);
-			
-			last = n;
-			context.add(n);
-		}
+		Parameters params = RunEnvironment.getInstance().getParameters();
+		String experiment = params.getString("experiment");
+		
+		ContextBuilderBuilder builder = ContextBuilderBuilderFactory.getBuilder(experiment);
+		builder.build(context, params, knownConnections, currentConnections, allNodes);
 				
 		return context;
 	}
