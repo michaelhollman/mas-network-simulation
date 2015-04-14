@@ -10,6 +10,6 @@ public class NodeConfiguration {
 	
 	public int SimultaneousConnectionLimit;
 	
-	public Distribution WantNewFileDistribution;
-	public Distribution JoinLeaveDistribution;
+	public Distribution RequestDistribution;
+	public Distribution ChurnDistribution;
 }

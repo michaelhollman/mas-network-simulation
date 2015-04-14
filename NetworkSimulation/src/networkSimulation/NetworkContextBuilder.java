@@ -26,10 +26,10 @@ public class NetworkContextBuilder extends DefaultContext<FileSharingNode> imple
 		ArrayList<FileSharingNode> allNodes = new ArrayList<FileSharingNode>();
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
-		String experiment = params.getString("experiment");
+		String experimentSetting = params.getString("experimentSetting");
 		
-		ContextBuilderBuilder builder = ContextBuilderBuilderFactory.getBuilder(experiment);
-		builder.build(context, params, knownConnections, currentConnections, allNodes);
+		ContextBuilderBuilder builder = ContextBuilderBuilderFactory.getBuilder(experimentSetting);
+		context = builder.build(context, params, knownConnections, currentConnections, allNodes);
 				
 		return context;
 	}

@@ -3,12 +3,11 @@ package networkSimulation.config;
 import java.util.ArrayList;
 
 import networkSimulation.FileSharingNode;
-import networkSimulation.NodeConfiguration;
 import repast.simphony.context.Context;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.graph.Network;
 
-public class TestBuilder extends ContextBuilderBuilder {
+public class UltraAndLeafBuilder extends ContextBuilderBuilder {
 
 	@Override
 	public Context<FileSharingNode> build(Context<FileSharingNode> context, Parameters params,
@@ -16,23 +15,7 @@ public class TestBuilder extends ContextBuilderBuilder {
 			Network<FileSharingNode> currentConnections,
 			ArrayList<FileSharingNode> allNodes) {
 		// TODO Auto-generated method stub
-
-		int nodeCount = params.getInteger("node_count");
-		
-		FileSharingNode last = null;
-		for (int i = 0; i < nodeCount; i++) {
-			NodeConfiguration config = new NodeConfiguration();
-			config.NodeId = i;
-
-			FileSharingNode n = new FileSharingNode(knownConnections,
-					currentConnections, config);
-			if (last != null)
-				knownConnections.addEdge(last, n);
-
-			last = n;
-			context.add(n);
-		}
-
 		return context;
 	}
+
 }
