@@ -16,13 +16,16 @@ import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.WrapAroundBorders;
 
 
-public class NetworkContextBuilder extends DefaultContext<Object> implements ContextBuilder<Object> {
+public class NetworkContextBuilder extends DefaultContext<FileSharingNode> implements ContextBuilder<FileSharingNode> {
 
-	public Context<Object> build(Context<Object> context) {
+	public Context<FileSharingNode> build(Context<FileSharingNode> context) {
 		context.setId("NetworkSimulation");
 				
-		NetworkBuilder<Object> knownConnectionsNetworkBuilder = new NetworkBuilder<Object>("knownConnections", context, false);
-		Network<Object> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
+		NetworkBuilder<FileSharingNode> knownConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("knownConnections", context, false);
+		Network<FileSharingNode> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
+		
+		NetworkBuilder<FileSharingNode> currentConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("currentConnections", context, false);
+		Network<FileSharingNode> currentConnections = currentConnectionsNetworkBuilder.buildNetwork();
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		int nodeCount = (Integer) params.getValue("node_count");
@@ -31,9 +34,9 @@ public class NetworkContextBuilder extends DefaultContext<Object> implements Con
 		for (int i = 0; i < nodeCount; i++)
 		{
 			NodeConfiguration config = new NodeConfiguration();
-			config.Id = i;
+			config.NodeId = i;
 			
-			FileSharingNode n = new FileSharingNode(knownConnections, config);
+			FileSharingNode n = new FileSharingNode(knownConnections, currentConnections, config);
 			if (last != null) knownConnections.addEdge(last, n);
 			
 			last = n;
