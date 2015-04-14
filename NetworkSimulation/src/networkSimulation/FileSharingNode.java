@@ -5,12 +5,12 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.space.grid.Grid;
 
 public class FileSharingNode {
-	private Network<Object> knownConnections;
-	private Network<Object> currentConnections;
+	private Network<FileSharingNode> knownConnections;
+	private Network<FileSharingNode> currentConnections;
 	
 	private int id;
 	
-	public FileSharingNode(Network<Object> knownConnections, Network<Object> currentConnections, NodeConfiguration configuration) {
+	public FileSharingNode(Network<FileSharingNode> knownConnections, Network<FileSharingNode> currentConnections, NodeConfiguration configuration) {
 		this.knownConnections = knownConnections;
 		this.currentConnections = currentConnections;
 		
