@@ -27,8 +27,10 @@ local.properties
 .texlipse
 
 # Logs
-.log
-debug.log
+*.log
+
+# Docs
+**/docs/
 
 # misc crap
 thumbs.db
