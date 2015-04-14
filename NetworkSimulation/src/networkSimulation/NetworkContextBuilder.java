@@ -14,7 +14,7 @@ public class NetworkContextBuilder extends DefaultContext<FileSharingNode> imple
 	public Context<FileSharingNode> build(Context<FileSharingNode> context) {
 		context.setId("rak_network");
 		
-		NetworkBuilder<FileSharingNode> knownConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("known connections", context, true);
+		NetworkBuilder<FileSharingNode> knownConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("known connections", context, false);
 		Network<FileSharingNode> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
