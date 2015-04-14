@@ -24,6 +24,9 @@ public class NetworkContextBuilder extends DefaultContext<Object> implements Con
 		NetworkBuilder<Object> knownConnectionsNetworkBuilder = new NetworkBuilder<Object>("knownConnections", context, false);
 		Network<Object> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
 		
+		NetworkBuilder<Object> currentConnectionsNetworkBuilder = new NetworkBuilder<Object>("currentConnections", context, false);
+		Network<Object> currentConnections = currentConnectionsNetworkBuilder.buildNetwork();
+		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		int nodeCount = (Integer) params.getValue("node_count");
 		
@@ -31,9 +34,9 @@ public class NetworkContextBuilder extends DefaultContext<Object> implements Con
 		for (int i = 0; i < nodeCount; i++)
 		{
 			NodeConfiguration config = new NodeConfiguration();
-			config.Id = i;
+			config.NodeId = i;
 			
-			FileSharingNode n = new FileSharingNode(knownConnections, config);
+			FileSharingNode n = new FileSharingNode(knownConnections, currentConnections, config);
 			if (last != null) knownConnections.addEdge(last, n);
 			
 			last = n;
