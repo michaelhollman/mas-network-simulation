@@ -15,14 +15,22 @@
   </editedStyles>
   <netStyles>
     <entry>
-      <string>knownConnections</string>
+      <string>currentConnections</string>
       <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
+    </entry>
+    <entry>
+      <string>knownConnections</string>
+      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
     </entry>
   </netStyles>
   <editedNetStyles>
     <entry>
-      <string>knownConnections</string>
+      <string>currentConnections</string>
       <null/>
+    </entry>
+    <entry>
+      <string>knownConnections</string>
+      <string>knownConnections.style_0.xml</string>
     </entry>
   </editedNetStyles>
   <frequency>AT_INTERVAL</frequency>
@@ -33,10 +41,10 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1057636978</hashCode>
+    <hashCode>-413679773</hashCode>
   </schedParams>
   <layoutClassName>repast.simphony.visualization.visualization2D.layout.KKLayout2D</layoutClassName>
-  <layoutProjection>knownConnections</layoutProjection>
+  <layoutProjection>currentConnections</layoutProjection>
   <layoutInterval>1</layoutInterval>
   <layerOrder>
     <entry>
@@ -50,8 +58,20 @@
       <attributes/>
       <type>network</type>
     </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>currentConnections</id>
+      <attributes/>
+      <type>network</type>
+    </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <projectionDescriptors>
+    <entry>
+      <string>currentConnections</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
     <entry>
       <string>knownConnections</string>
       <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
