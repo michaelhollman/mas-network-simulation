@@ -29,6 +29,9 @@ local.properties
 # Logs
 *.log
 
+# Docs
+**/docs/
+
 # misc crap
 thumbs.db
 .DS_Store
