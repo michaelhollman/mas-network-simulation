@@ -8,17 +8,23 @@ import repast.simphony.space.graph.Network;
 
 public class FileSharingNode {	
 	
+	private Network<FileSharingNode> knownConnections;
+	private Network<FileSharingNode> currentConnections;
+	
 	public NodeConfiguration config;
 	public int numberOfConnections; // this will eventually be in  config or something
 	public int ip; // this will eventually be in  config or something
 	public ArrayList<Integer> knownFiles;
 	public LinkedList<AbstractRequest> workQueue;
 	
-	public FileSharingNode(NodeConfiguration configuration) {
-		this.workQueue = new LinkedList<AbstractRequest>();
-		this.knownFiles = new ArrayList<Integer>();
-		this.numberOfConnections = 1;
+
+	public FileSharingNode(Network<FileSharingNode> knownConnections, Network<FileSharingNode> currentConnections, NodeConfiguration configuration) {
+		this.knownConnections = knownConnections;
+		this.currentConnections = currentConnections;
 		this.config = configuration;
+		
+		knownFiles = new ArrayList<Integer>();
+		workQueue = new LinkedList<AbstractRequest>();
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
