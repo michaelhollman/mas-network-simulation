@@ -61,6 +61,12 @@
 									values="test identical ultraAndLeaf "
 						
 		/>
+				<parameter name="timeout" displayName="Timeout (Ticks)" type="int" 
+						defaultValue="100" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+									
+		/>
 		</parameters>
 
 

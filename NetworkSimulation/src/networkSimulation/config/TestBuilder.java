@@ -24,6 +24,7 @@ public class TestBuilder extends ContextBuilderBuilder {
 		int initialActive = params.getInteger("initialActive");
 		int fileCount = params.getInteger("file_count");
 		int genericConnectionLimit = params.getInteger("genericConnectionLimit");
+		int timeout = params.getInteger("timeout");
 		double churnRate = params.getDouble("churnRate");
 		double requestRate = params.getDouble("requestRate");
 		
@@ -31,10 +32,12 @@ public class TestBuilder extends ContextBuilderBuilder {
 		ArrayList<FileSharingNode> nodes = new ArrayList<FileSharingNode>();
 		int initialDead = nodeCount - initialActive;
 		int deadModulo = nodeCount / initialDead;
+		int filesPerNode = nodeCount / fileCount;
 		
 		for (int ip = 0; ip < nodeCount; ip++) {
 			boolean isDead = ip % deadModulo == 0;
 			
+			// Generic node configuration
 			NodeConfiguration configuration = new NodeConfiguration();
 			configuration.NodeIp = ip;
 			configuration.NodeState = isDead ? NodeState.DEAD : NodeState.ALIVE;
@@ -42,8 +45,13 @@ public class TestBuilder extends ContextBuilderBuilder {
 			configuration.SimultaneousConnectionLimit = genericConnectionLimit;
 			configuration.ChurnDistribution = new UniformDistribution(0, 1, 1-churnRate);
 			configuration.RequestDistribution = new UniformDistribution(0, 1, 1-requestRate);
+			configuration.StartingFiles = new ArrayList<Integer>();
 			
-			// TODO: Allocate files
+			// Allocate files evenly
+			int startingFile = ip * filesPerNode;
+			for (int fileNum = startingFile; fileNum < startingFile + filesPerNode && fileNum < fileCount; fileNum++) {
+				configuration.StartingFiles.add(fileNum);
+			}
 			
 			// TODO: Place in space
 			
@@ -53,7 +61,8 @@ public class TestBuilder extends ContextBuilderBuilder {
 		
 		// Set shared global state
 		GlobalContext.NodeCount = nodeCount;
-		GlobalContext.FileCount = fileCount;	
+		GlobalContext.FileCount = fileCount;
+		GlobalContext.Timeout = timeout;
 		GlobalContext.IpLookup = nodes;
 		
 		// Debug information
