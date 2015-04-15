@@ -33,7 +33,7 @@ public class TestBuilder extends ContextBuilderBuilder {
 		ArrayList<FileSharingNode> nodes = new ArrayList<FileSharingNode>();
 		int initialDead = nodeCount - initialActive;
 		int deadModulo = nodeCount / initialDead;
-		int filesPerNode = nodeCount / fileCount;
+		int filesPerNode = fileCount / nodeCount;
 		
 		for (int ip = 0; ip < nodeCount; ip++) {
 			boolean isDead = ip % deadModulo == 0;

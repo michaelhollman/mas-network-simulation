@@ -26,6 +26,6 @@ public class UniformDistribution implements Distribution {
 	@Override
 	public boolean getDecision() {
 		double u = getValue();
-		return pvalue > u;
+		return pvalue < u;
 	}
 }

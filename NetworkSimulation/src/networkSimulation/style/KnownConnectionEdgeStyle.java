@@ -2,7 +2,6 @@ package networkSimulation.style;
 
 import java.awt.Color;
 
-import networkSimulation.GlobalContext;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D;
 
@@ -13,14 +12,12 @@ public class KnownConnectionEdgeStyle extends DefaultEdgeStyleOGL2D {
 		return Color.LIGHT_GRAY;
 	}
 
+	// TODO: add static max weight to better scale line widths
+	private static double MaxWeightSeen = 0;
+
 	@Override
 	public int getLineWidth(RepastEdge<?> edge) {
-		double wt = edge.getWeight();
-		int max = GlobalContext.Timeout;
-		int floor = 1;
-		int ceil = 4;
-		
-		return (int) ((wt / max) * (ceil - floor) + floor);
+		return 1;
 	}
 
 }
