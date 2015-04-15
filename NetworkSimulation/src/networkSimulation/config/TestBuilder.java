@@ -9,6 +9,7 @@ import networkSimulation.NodeState;
 import networkSimulation.NodeType;
 import repast.simphony.context.Context;
 import repast.simphony.parameter.Parameters;
+import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.graph.Network;
 
 public class TestBuilder extends ContextBuilderBuilder {
@@ -17,7 +18,7 @@ public class TestBuilder extends ContextBuilderBuilder {
 	public Context<FileSharingNode> build(Context<FileSharingNode> context, Parameters params,
 			Network<FileSharingNode> knownConnections,
 			Network<FileSharingNode> currentConnections,
-			ArrayList<FileSharingNode> allNodes) {
+			ContinuousSpace<FileSharingNode> space) {
 
 		// Parse parameters
 		int nodeCount = params.getInteger("node_count");
@@ -52,9 +53,7 @@ public class TestBuilder extends ContextBuilderBuilder {
 			for (int fileNum = startingFile; fileNum < startingFile + filesPerNode && fileNum < fileCount; fileNum++) {
 				configuration.StartingFiles.add(fileNum);
 			}
-			
-			// TODO: Place in space
-			
+						
 			FileSharingNode node = new FileSharingNode(knownConnections, currentConnections, configuration);
 			nodes.add(node);
 		}
@@ -71,6 +70,17 @@ public class TestBuilder extends ContextBuilderBuilder {
 		
 		// Set and return context
 		context.addAll(nodes);				
+		
+		// Place nodes in a circle in space (after adding to context)
+		int center = 50;
+		int radius = 48;
+		for (int i = 0; i < nodeCount; i++) {
+			double theta = 2*Math.PI*i/nodeCount;
+			double x = center + radius*Math.cos(theta);
+			double y = center + radius*Math.sin(theta);
+			space.moveTo(nodes.get(i), x, y);
+		}
+				
 		return context;
 	}
 }

@@ -6,6 +6,7 @@ import networkSimulation.FileSharingNode;
 import networkSimulation.NodeConfiguration;
 import repast.simphony.context.Context;
 import repast.simphony.parameter.Parameters;
+import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.graph.Network;
 
 public class IdenticalBuilder extends ContextBuilderBuilder {
@@ -14,7 +15,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
 	public Context<FileSharingNode> build(Context<FileSharingNode> context, Parameters params,
 			Network<FileSharingNode> knownConnections,
 			Network<FileSharingNode> currentConnections,
-			ArrayList<FileSharingNode> allNodes) {
+			ContinuousSpace<FileSharingNode> space) {
 		
 //		int nodeCount = params.getInteger("node_count");
 //		
