@@ -13,7 +13,7 @@ public class FileSharingNode {
 	public FileSharingNode(Network<FileSharingNode> knownConnections, Network<FileSharingNode> currentConnections, NodeConfiguration configuration) {
 		this.knownConnections = knownConnections;
 		this.currentConnections = currentConnections;
-		this.id = configuration.NodeId;
+		this.id = configuration.NodeIp;
 		count = 0;
 	}
 

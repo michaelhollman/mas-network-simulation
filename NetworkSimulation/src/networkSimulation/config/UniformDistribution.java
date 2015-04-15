@@ -7,11 +7,13 @@ import networkSimulation.Distribution;
 public class UniformDistribution implements Distribution {
 	private double min;
 	private double max;
+	private double pvalue;
 	private Random rand;
 
-	public UniformDistribution(double min, double max) {
+	public UniformDistribution(double min, double max, double pvalue) {
 		this.min = min;
 		this.max = max;
+		this.pvalue = pvalue;
 		this.rand = new Random();
 	}
 	
@@ -22,7 +24,7 @@ public class UniformDistribution implements Distribution {
 	}
 
 	@Override
-	public boolean getDecision(double pvalue) {
+	public boolean getDecision() {
 		double u = getValue();
 		return pvalue > u;
 	}
