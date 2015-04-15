@@ -7,6 +7,7 @@ import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
 
 public class FileSharingNode {	
 	
@@ -25,8 +26,8 @@ public class FileSharingNode {
 		this.currentConnections = currentConnections;
 		config = configuration;
 		knownFileOwners = new HashMap<Integer, ArrayList<Integer>>(); 
-		knownFiles = new Vector<Integer>(config.StartingFiles);
 		workQueue = new Vector<AbstractRequest>();
+		knownFiles = new Vector<Integer>(config.StartingFiles);
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -53,7 +54,9 @@ public class FileSharingNode {
 //		}
 		
 		if (config.RequestDistribution.getDecision()) {
-			int targetNode = RandomUtil.getRandom(0, GlobalContext.NodeCount - 1, null);
+			Vector<Integer> excludes = new Vector<Integer>(knownFiles);
+			excludes.add(new Integer(config.NodeIp));
+			int targetNode = RandomUtil.getRandom(0, GlobalContext.NodeCount - 1, excludes);
 			PingRequest ping = new PingRequest(this, targetNode);
 			ping.send();
 		}
@@ -84,7 +87,7 @@ public class FileSharingNode {
 			throw new RuntimeException("Ping sent to wrong node. Target=" + ping.targetIP + " Receiver=" + config.NodeIp);
 		}
 		workQueue.add(ping);
-		System.out.println("Ping added from " + ping.sourceNode.config.NodeIp + " to " + ping.targetIP);
+		currentConnections.addEdge(ping.sourceNode, this);
 	}
 	
 	public void query(QueryRequest query) {
@@ -110,7 +113,7 @@ public class FileSharingNode {
 	}
 	
 	public void giveResponseTimeInfo(int destinationIP, double ticks) {
-		
+		addWeightToKnownConnection(destinationIP, ticks);
 	}
 	
 	//// PRIVATE ---------------------------------------
@@ -138,6 +141,11 @@ public class FileSharingNode {
 			return false;
 		} else if (config.NodeIp == ping.targetIP && !ping.fulfilled) {
 			ping.fulfill(this);
+			
+			RepastEdge<FileSharingNode> edge = currentConnections.getEdge(ping.sourceNode, this);
+			if (edge != null) {
+				currentConnections.removeEdge(edge);
+			}
 			return true;
 		}
 		
@@ -179,5 +187,16 @@ public class FileSharingNode {
 		throw new RuntimeException("processRequest didn't know what to do!");
 	}
 	
+	private void addWeightToKnownConnection(int ip, double weight) {
+		FileSharingNode dest = GlobalContext.IpLookup.get(ip);
+		RepastEdge<FileSharingNode> edge = knownConnections.getEdge(this, dest);
+		if (edge != null) {
+			weight = (edge.getWeight() + weight) / 2.0; 
+			knownConnections.removeEdge(edge);
+			knownConnections.addEdge(this, dest, weight);
+		} else {
+			knownConnections.addEdge(this, dest, weight);
+		}
+	}
 	
 }

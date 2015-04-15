@@ -9,8 +9,8 @@ public class PingRequest extends AbstractRequest {
 		this.targetIP = targetIP;
 	}
 	
-	public void fulfull(FileSharingNode ponger) {
-		super.fulfill(ponger);
+	public void fulfill(FileSharingNode fulfiller) {
+		super.fulfill(fulfiller);
 		sourceNode.giveResponseTimeInfo(targetIP, fulfilledTick - startTick);
 	}
 	
