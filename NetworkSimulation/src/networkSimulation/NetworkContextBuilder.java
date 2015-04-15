@@ -28,7 +28,7 @@ public class NetworkContextBuilder extends DefaultContext<FileSharingNode> imple
 			NodeConfiguration config = new NodeConfiguration();
 			config.NodeId = i;
 			
-			FileSharingNode n = new FileSharingNode(knownConnections, currentConnections, config);
+			FileSharingNode n = new FileSharingNode(config);
 			if (last != null) knownConnections.addEdge(last, n);
 			
 			last = n;

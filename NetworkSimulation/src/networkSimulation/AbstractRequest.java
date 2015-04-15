@@ -1,0 +1,41 @@
+package networkSimulation;
+
+import java.util.*;
+
+import repast.simphony.engine.environment.RunEnvironment;
+
+public abstract class AbstractRequest {
+
+	public FileSharingNode sourceNode;
+	public FileSharingNode fulfiller;
+	public double startTick;
+	public boolean fulfilled;
+	public double fulfilledTick;
+	private boolean timedOut;
+	public double timedOutTick;
+
+	public AbstractRequest(FileSharingNode source) {
+		this.sourceNode = source;
+		this.startTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		this.fulfilled = false;
+		this.timedOut = false;
+	}
+	
+	public boolean checkTimeOut() {
+		if (timedOut) 
+			return timedOut;
+		
+		double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		timedOut = (currentTick - startTick) > 100; // TODO config 100
+		if (timedOut) {
+			timedOutTick = currentTick;
+		}
+		return timedOut;
+	}
+	
+	protected void fulfill(FileSharingNode fulfiller) {
+		this.fulfilled = true;
+		this.fulfiller = fulfiller;
+		this.fulfilledTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+	}
+}
