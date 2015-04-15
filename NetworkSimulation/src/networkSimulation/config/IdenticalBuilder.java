@@ -59,17 +59,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
 			FileSharingNode node = new FileSharingNode(knownConnections, currentConnections, configuration);
 			nodes.add(node);
 		}
-		
-		// Set shared global state
-		GlobalContext.NodeCount = nodeCount;
-		GlobalContext.FileCount = fileCount;
-		GlobalContext.Timeout = timeout;
-		GlobalContext.IpLookup = nodes;
-		
-		// Debug information
-		System.out.println("Created " + nodeCount + " nodes.");
-		System.out.println("Created " + fileCount + " files.");
-		
+				
 		// Set and return context
 		context.addAll(nodes);				
 		
@@ -83,6 +73,16 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
 			double y = center + radius*Math.sin(theta);
 			space.moveTo(nodes.get(i), x, y);
 		}
+		
+		// Set shared global state
+		GlobalContext.NodeCount = nodeCount;
+		GlobalContext.FileCount = fileCount;
+		GlobalContext.Timeout = timeout;
+		GlobalContext.IpLookup = nodes;
+		
+		// Debug information
+		System.out.println("Created " + nodeCount + " nodes.");
+		System.out.println("Created " + fileCount + " files.");
 		
 		return context;
 	}
