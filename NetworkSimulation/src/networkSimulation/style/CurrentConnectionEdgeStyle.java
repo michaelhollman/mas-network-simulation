@@ -19,6 +19,6 @@ public class CurrentConnectionEdgeStyle extends DefaultEdgeStyleOGL2D {
 
 	@Override
 	public int getLineWidth(RepastEdge<?> edge) {
-		return 2;
+		return 1;
 	}
 }
