@@ -1,7 +1,5 @@
 package networkSimulation;
 
-import java.util.*;
-
 import repast.simphony.engine.environment.RunEnvironment;
 
 public abstract class AbstractRequest {
@@ -15,10 +13,10 @@ public abstract class AbstractRequest {
 	public double timedOutTick;
 
 	public AbstractRequest(FileSharingNode source) {
-		this.sourceNode = source;
-		this.startTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
-		this.fulfilled = false;
-		this.timedOut = false;
+		sourceNode = source;
+		startTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		fulfilled = false;
+		timedOut = false;
 	}
 	
 	public boolean checkTimeOut() {

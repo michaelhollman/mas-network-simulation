@@ -1,7 +1,6 @@
 package networkSimulation;
 
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 
 import repast.simphony.engine.environment.RunEnvironment;
 
@@ -24,9 +23,11 @@ public class QueryRequest extends AbstractRequest {
 		super.fulfill(fulfiller);
 		sourceNode.giveFile(fileNumber);
 		while (!nodes.empty()) {
-			FileSharingNode node = nodes.pop();
+			FileSharingNode lastNode = nodes.pop();
 			double tick = nodeAddTimes.pop().doubleValue();
-			node.giveResponseTimeInfo(fulfiller.ip, fulfilledTick - tick);
+			for (FileSharingNode node : nodes) {
+				node.giveResponseTimeInfo(lastNode.ip, fulfilledTick - tick);	
+			}
 		}
 	}
 	
