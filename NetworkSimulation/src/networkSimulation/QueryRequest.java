@@ -26,7 +26,7 @@ public class QueryRequest extends AbstractRequest {
 			FileSharingNode lastNode = nodes.pop();
 			double tick = nodeAddTimes.pop().doubleValue();
 			for (FileSharingNode node : nodes) {
-				node.giveResponseTimeInfo(lastNode.ip, fulfilledTick - tick);	
+				node.giveResponseTimeInfo(lastNode.config.NodeIp, fulfilledTick - tick);	
 			}
 		}
 	}

@@ -35,5 +35,7 @@ public abstract class AbstractRequest {
 		this.fulfilled = true;
 		this.fulfiller = fulfiller;
 		this.fulfilledTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
+		
+		System.out.println("Fulfilled request by node " + sourceNode.config.NodeIp + " from node " + fulfiller.config.NodeIp);
 	}
 }
