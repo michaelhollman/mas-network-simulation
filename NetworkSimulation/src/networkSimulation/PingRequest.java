@@ -13,4 +13,8 @@ public class PingRequest extends AbstractRequest {
 		super.fulfill(ponger);
 		sourceNode.giveResponseTimeInfo(targetIP, fulfilledTick - startTick);
 	}
+	
+	public void send() {
+		GlobalContext.IpLookup.get(targetIP).ping(this);
+	}
 }

@@ -10,7 +10,7 @@ public class RandomUtil {
 		ArrayList<Integer> possible = new ArrayList<Integer>();
 		for (int i = from; i <= to; i ++) {
 			Integer intg = new Integer(i);
-			if (!excluding.contains(intg)) {
+			if (excluding == null || !excluding.contains(intg)) {
 				possible.add(intg);
 			}
 		}

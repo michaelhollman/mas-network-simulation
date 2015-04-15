@@ -46,10 +46,16 @@ public class FileSharingNode {
 		
 		
 		// create and add new requests to the work queue
+//		if (config.RequestDistribution.getDecision()) {
+//			int newFile = RandomUtil.getRandom(0, GlobalContext.FileCount - 1, knownFiles);
+//			QueryRequest newQuery = new QueryRequest(this, newFile);
+//			workQueue.add(newQuery);
+//		}
+		
 		if (config.RequestDistribution.getDecision()) {
-			int newFile = RandomUtil.getRandom(0, GlobalContext.FileCount - 1, knownFiles);
-			QueryRequest newQuery = new QueryRequest(this, newFile);
-			workQueue.add(newQuery);
+			int targetNode = RandomUtil.getRandom(0, GlobalContext.NodeCount - 1, null);
+			PingRequest ping = new PingRequest(this, targetNode);
+			ping.send();
 		}
 		
 		// process requests
@@ -61,7 +67,6 @@ public class FileSharingNode {
 				finishedRequests.add(req);
 			}
 		}
-		
 		for (AbstractRequest finreq : finishedRequests) {
 			workQueue.remove(finreq);
 		}
@@ -79,6 +84,7 @@ public class FileSharingNode {
 			throw new RuntimeException("Ping sent to wrong node. Target=" + ping.targetIP + " Receiver=" + config.NodeIp);
 		}
 		workQueue.add(ping);
+		System.out.println("Ping added from " + ping.sourceNode.config.NodeIp + " to " + ping.targetIP);
 	}
 	
 	public void query(QueryRequest query) {
