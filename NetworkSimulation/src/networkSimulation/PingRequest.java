@@ -15,7 +15,11 @@ public class PingRequest extends AbstractRequest {
 
     protected void bubbleUpTickInfo(boolean didTimeout) {
         double numberOfTicks = (didTimeout ? timedOutTick : fulfilledTick) - startTick;
+
+        if (!didTimeout && fulfiller != null && fulfiller.config.NodeType != NodeType.ULTRA_PEER) {
+            numberOfTicks *= GlobalContext.Timeout;
+        }
+
         sourceNode.giveResponseTimeInfo(targetIP, numberOfTicks, didTimeout);
     }
-
 }

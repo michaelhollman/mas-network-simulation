@@ -48,6 +48,18 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
     }
 
     public void fulfill(FileSharingNode fulfiller) {
+
+        @SuppressWarnings("unchecked")
+        Stack<FileSharingNode> tempNodes = (Stack<FileSharingNode>) nodes.clone();
+
+        while (!tempNodes.isEmpty()) {
+            FileSharingNode last = tempNodes.pop();
+            if (tempNodes.isEmpty())
+                break;
+            FileSharingNode next = tempNodes.peek();
+            next.giveFileInfo(fileNumber, last.config.NodeIp);
+        }
+
         super.fulfill(fulfiller);
         sourceNode.giveFile(fileNumber);
     }

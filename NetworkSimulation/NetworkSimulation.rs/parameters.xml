@@ -13,13 +13,13 @@
 									
 		/>
 				<parameter name="node_count" displayName="Node Count" type="int" 
-						defaultValue="10" 
+						defaultValue="100" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="churnRate" displayName="Churn Rate (Identical)" type="double" 
-						defaultValue="0.005" 
+						defaultValue="0.00001" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
@@ -43,13 +43,13 @@
 									
 		/>
 				<parameter name="leafChurnRate" displayName="Churn Rate (Leaf)" type="double" 
-						defaultValue="0.005" 
+						defaultValue="0.00001" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
 		/>
 				<parameter name="initialActive" displayName="Initial Active Nodes" type="int" 
-						defaultValue="8" 
+						defaultValue="90" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -61,13 +61,13 @@
 									
 		/>
 				<parameter name="leafConnectionLimit" displayName="Connection Limit (Leaves)" type="int" 
-						defaultValue="2" 
-						isReadOnly="false" 
+						defaultValue="15" 
+						isReadOnly="fals" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="ultraChurnRate" displayName="Churn Rate (Ultra)" type="double" 
-						defaultValue="0.001" 
+						defaultValue="0.000001" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									
@@ -79,7 +79,7 @@
 									
 		/>
 				<parameter name="experimentSetting" displayName="Experiment Setting" type="java.lang.String" 
-						defaultValue="test" 
+						defaultValue="ultraAndLeaf" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 									values="test identical ultraAndLeaf "
@@ -104,7 +104,7 @@
 									
 		/>
 				<parameter name="timeout" displayName="Timeout (Ticks)" type="int" 
-						defaultValue="100" 
+						defaultValue="30" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									

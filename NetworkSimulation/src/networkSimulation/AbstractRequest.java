@@ -48,7 +48,7 @@ public abstract class AbstractRequest {
         if (timedOut) {
             timedOutTick = currentTick;
             bubbleUpTickInfo(true);
-            System.out.println("Request timed out from " + sourceNode.config.NodeIp + " in " + (fulfilledTick - startTick) + " ticks");
+            // System.out.println("Request timed out from " + sourceNode.config.NodeIp + " in " + (fulfilledTick - startTick) + " ticks");
         }
         return timedOut;
     }
@@ -70,7 +70,7 @@ public abstract class AbstractRequest {
         this.fulfilledTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
         bubbleUpTickInfo(false);
 
-        System.out.println("Request fulfilled from " + sourceNode.config.NodeIp + " to " + fulfiller.config.NodeIp + " in " + (fulfilledTick - startTick) + " ticks");
+        // System.out.println("Request fulfilled from " + sourceNode.config.NodeIp + " to " + fulfiller.config.NodeIp + " in " + (fulfilledTick - startTick) + " ticks");
     }
 
     public boolean needsToWaitOneTick() {

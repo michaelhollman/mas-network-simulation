@@ -39,6 +39,16 @@ public class FileSharingNode {
     @ScheduledMethod(start = 1, interval = 1)
     public void tick() {
 
+        if (config.ChurnDistribution.getDecision()) {
+            config.NodeState = config.NodeState == NodeState.DEAD ? NodeState.ALIVE : NodeState.DEAD;
+
+            if (config.NodeState == NodeState.DEAD) {
+                knownFileOwners = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
+                knownFiles = new Vector<Integer>(config.StartingFiles);
+                nodeMap = new ConcurrentHashMap<Integer, Tuple<Double, Integer>>();
+            }
+        }
+
         // handle race condition: remove any already fulfilled requests
         // remove timed out ones too
         LinkedList<AbstractRequest> removes = new LinkedList<AbstractRequest>();
@@ -62,23 +72,8 @@ public class FileSharingNode {
             req.removeFromNetwork(currentConnections);
         }
 
-        int PINGTHRESHOLD = 3; // TODO: make this a parameter or whatever they're called
-        boolean shouldPing = nodeMap == null || nodeMap.size() < PINGTHRESHOLD;
-        if (shouldPing && workQueue.size() < config.SimultaneousConnectionLimit) {
-            Vector<Integer> excludes = new Vector<Integer>();
-            excludes.add(config.NodeIp);
-            while (workQueue.size() < config.SimultaneousConnectionLimit) {
-                Integer targetNode = RandomUtil.getRandom(0, GlobalContext.NodeCount - 1, excludes);
-                if (targetNode != null) {
-                    PingRequest ping = new PingRequest(this, targetNode);
-                    workQueue.add(ping);
-                    ping.send();
-                    excludes.add(targetNode);
-                } else {
-                    break;
-                }
-            }
-        }
+        if (config.NodeState == NodeState.DEAD)
+            return;
 
         // create and add new requests to the work queue
         if (workQueue.size() < config.SimultaneousConnectionLimit && config.RequestDistribution.getDecision()) {
@@ -103,12 +98,6 @@ public class FileSharingNode {
         }
     }
 
-    public void giveFile(int fileNumber) {
-        if (!knownFiles.contains(fileNumber)) {
-            knownFiles.add(fileNumber);
-        }
-    }
-
     public void ping(PingRequest ping) {
         if (ping.targetIP != config.NodeIp) {
             throw new RuntimeException("Ping sent to wrong node. Target=" + ping.targetIP + " Receiver=" + config.NodeIp);
@@ -122,7 +111,13 @@ public class FileSharingNode {
         FileSharingNode lastNode = query.nodes.peek();
         query.addEdge(currentConnections.addEdge(lastNode, this, AbstractRequest.CONNECTION_QUERY));
         query.addIntermediate(this);
-        System.out.println("Querying from " + lastNode.config.NodeIp + " to " + config.NodeIp);
+        // System.out.println("Querying from " + lastNode.config.NodeIp + " to " + config.NodeIp);
+    }
+
+    public void giveFile(int fileNumber) {
+        if (!knownFiles.contains(fileNumber)) {
+            knownFiles.add(fileNumber);
+        }
     }
 
     public void giveFileInfo(int fileNumber, int fileOwnerIp) {
@@ -137,6 +132,8 @@ public class FileSharingNode {
         if (!owners.contains(fileOwnerIp)) {
             owners.add(fileOwnerIp);
         }
+
+        System.out.println(config.NodeIp + " learned that " + fileOwnerIp + " has " + fileNumber);
 
         knownFileOwners.put(fileNumber, owners);
     }
@@ -196,7 +193,7 @@ public class FileSharingNode {
             }
 
             // TODO: add some configurability here
-            int FAN_OUT_ALLOWED = 2;
+            int FAN_OUT_ALLOWED = config.NodeType == NodeType.ULTRA_PEER ? 20 : 4;
             int numberAdded = 0;
             while (numberAdded < FAN_OUT_ALLOWED && workQueue.size() < config.SimultaneousConnectionLimit) {
                 numberAdded++;
@@ -218,6 +215,10 @@ public class FileSharingNode {
                 FileSharingNode node = GlobalContext.IpLookup.get(ip);
                 node.query(req);
                 incrementNodeChoiceCount(ip);
+            }
+
+            if (nextNode == null || nodeMap == null || nodeMap.size() == 0) {
+                startPingingThingsIfNeeded();
             }
 
             return false;
@@ -260,14 +261,17 @@ public class FileSharingNode {
 
             if (minWeightIp == null) {
                 // for some reason, we don't have any weights for known owners
-                // (extremely unlikely)
                 // pick a random owner
                 ArrayList<Integer> tempList = new ArrayList<>(knownOwners);
                 tempList.removeAll(ignoreIps);
-                nextNodeIp = tempList.get(RandomHelper.nextIntFromTo(0, tempList.size() - 1));
+                if (tempList.size() != 0) {
+                    nextNodeIp = tempList.get(RandomHelper.nextIntFromTo(0, tempList.size() - 1));
+                }
             } else {
                 nextNodeIp = minWeightIp;
             }
+
+            System.out.println("Chose node " + nextNodeIp + " with weight " + minWeight + " from knownOwners");
 
         } else if (nodeMap != null && nodeMap.size() > 0) {
             // we have no known owners, so pick the fastest known node;
@@ -299,6 +303,8 @@ public class FileSharingNode {
             } else {
                 nextNodeIp = minWeightIp;
             }
+
+            System.out.println("Chose node " + nextNodeIp + " with weight " + minWeight + " from nodeMap");
         }
         // else, we know nothing. sit and wait while pings finish
 
@@ -306,6 +312,7 @@ public class FileSharingNode {
     }
 
     private void addWeightToKnownConnection(int ip, double weight, boolean timeout) {
+
         Tuple<Double, Integer> nodeInfo = nodeMap.get(ip);
         if (nodeInfo == null) {
             nodeInfo = new Tuple<Double, Integer>(weight, 0);
@@ -318,7 +325,7 @@ public class FileSharingNode {
             nodeInfo.x = nodeInfo.x * 0.6 + weight * 0.4;
         }
 
-        System.out.println("Node " + config.NodeIp + " has a weight for node " + ip + " of " + nodeInfo.x);
+        // System.out.println("Node " + config.NodeIp + " has a weight for node " + ip + " of " + nodeInfo.x);
 
         FileSharingNode dest = GlobalContext.IpLookup.get(ip);
         RepastEdge<FileSharingNode> edge = knownConnections.getEdge(this, dest);
@@ -338,7 +345,29 @@ public class FileSharingNode {
         } else {
             nodeInfo.y++;
         }
-        System.out.println("Node " + config.NodeIp + " has chosen node " + ip + " " + nodeInfo.y + " times");
+        // System.out.println("Node " + config.NodeIp + " has chosen node " + ip + " " + nodeInfo.y + " times");
+    }
+
+    private void startPingingThingsIfNeeded() {
+        int PINGTHRESHOLD = 3; // TODO: make this a parameter or whatever they're called
+        boolean shouldPing = nodeMap == null || nodeMap.size() < PINGTHRESHOLD;
+        if (shouldPing && workQueue.size() < config.SimultaneousConnectionLimit) {
+            Vector<Integer> excludes = new Vector<Integer>();
+            excludes.add(config.NodeIp);
+            int pingCount = 0;
+            while (pingCount < PINGTHRESHOLD && workQueue.size() < config.SimultaneousConnectionLimit) {
+                pingCount++;
+                Integer targetNode = RandomUtil.getRandom(0, GlobalContext.NodeCount - 1, excludes);
+                if (targetNode != null) {
+                    PingRequest ping = new PingRequest(this, targetNode);
+                    workQueue.add(ping);
+                    ping.send();
+                    excludes.add(targetNode);
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
 }
