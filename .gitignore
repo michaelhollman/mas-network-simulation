@@ -28,6 +28,7 @@ local.properties
 
 # Logs
 *.log
+*.log.*
 
 # Docs
 **/docs/

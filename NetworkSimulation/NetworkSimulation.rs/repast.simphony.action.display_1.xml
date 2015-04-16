@@ -1,10 +1,10 @@
 <repast.simphony.visualization.engine.CartesianDisplayDescriptor>
-  <name>Network Display</name>
+  <name>Known and Current Connections</name>
   <type>2D</type>
   <styles>
     <entry>
       <string>networkSimulation.FileSharingNode</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>networkSimulation.style.FileSharingNodeStyle</string>
     </entry>
   </styles>
   <editedStyles>
@@ -15,25 +15,25 @@
   </editedStyles>
   <netStyles>
     <entry>
-      <string>knownConnections</string>
-      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
+      <string>currentConnections</string>
+      <string>networkSimulation.style.CurrentConnectionEdgeStyle</string>
     </entry>
     <entry>
-      <string>currentConnections</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
+      <string>knownConnections</string>
+      <string>networkSimulation.style.KnownConnectionEdgeStyle</string>
     </entry>
   </netStyles>
   <editedNetStyles>
     <entry>
-      <string>knownConnections</string>
-      <string>knownConnections.style_0.xml</string>
-    </entry>
-    <entry>
       <string>currentConnections</string>
       <null/>
     </entry>
+    <entry>
+      <string>knownConnections</string>
+      <null/>
+    </entry>
   </editedNetStyles>
-  <frequency>AT_INTERVAL</frequency>
+  <frequency>ON_MOVE</frequency>
   <schedParams>
     <start>1.0</start>
     <interval>1.0</interval>
@@ -41,11 +41,11 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1571921824</hashCode>
+    <hashCode>248906215</hashCode>
   </schedParams>
-  <layoutClassName>repast.simphony.visualization.visualization2D.layout.KKLayout2D</layoutClassName>
-  <layoutProjection>currentConnections</layoutProjection>
-  <layoutInterval>1</layoutInterval>
+  <layoutClassName>foo.bar.baz</layoutClassName>
+  <layoutProjection>space</layoutProjection>
+  <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
       <string>networkSimulation.FileSharingNode</string>
@@ -63,8 +63,23 @@
       <attributes/>
       <type>network</type>
     </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>space</id>
+      <attributes/>
+      <type>continuous space</type>
+    </repast.simphony.scenario.data.ProjectionData>
   </projections>
+  <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
+    <unitSize>15.0</unitSize>
+  </visualizationProperties>
   <projectionDescriptors>
+    <entry>
+      <string>currentConnections</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+    </entry>
     <entry>
       <string>knownConnections</string>
       <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
@@ -73,11 +88,29 @@
       </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
     </entry>
     <entry>
-      <string>currentConnections</string>
-      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
-        <props/>
-      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+      <string>space</string>
+      <repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[3]"/>
+        <props>
+          <entry>
+            <string>repast.simphony.visualization.continuous.ContinuousDecorator</string>
+            <map>
+              <entry>
+                <string>COLOR</string>
+                <int>-16777216</int>
+              </entry>
+              <entry>
+                <string>UNIT_SIZE</string>
+                <float>15.0</float>
+              </entry>
+              <entry>
+                <string>SHOW</string>
+                <boolean>false</boolean>
+              </entry>
+            </map>
+          </entry>
+        </props>
+      </repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
     </entry>
   </projectionDescriptors>
   <props/>

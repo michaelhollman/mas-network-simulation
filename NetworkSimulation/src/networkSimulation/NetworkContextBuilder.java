@@ -1,7 +1,5 @@
 package networkSimulation;
 
-import java.util.ArrayList;
-
 import networkSimulation.config.ContextBuilderBuilder;
 import networkSimulation.config.ContextBuilderBuilderFactory;
 import repast.simphony.context.Context;
@@ -26,15 +24,16 @@ public class NetworkContextBuilder extends DefaultContext<FileSharingNode> imple
 		ContinuousSpace<FileSharingNode> space = spaceFactory.createContinuousSpace("space", context, 
 				new RandomCartesianAdder<FileSharingNode>(), new WrapAroundBorders(), 100, 100);
 						
-		NetworkBuilder<FileSharingNode> knownConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("knownConnections", context, false);
+		NetworkBuilder<FileSharingNode> knownConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("knownConnections", context, true);
 		Network<FileSharingNode> knownConnections = knownConnectionsNetworkBuilder.buildNetwork();
 		
-		NetworkBuilder<FileSharingNode> currentConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("currentConnections", context, false);
+		NetworkBuilder<FileSharingNode> currentConnectionsNetworkBuilder = new NetworkBuilder<FileSharingNode>("currentConnections", context, true);
 		Network<FileSharingNode> currentConnections = currentConnectionsNetworkBuilder.buildNetwork();
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 		String experimentSetting = params.getString("experimentSetting");
 		
+
 		ContextBuilderBuilder builder = ContextBuilderBuilderFactory.getBuilder(experimentSetting);
 		context = builder.build(context, params, knownConnections, currentConnections, space);
 				
