@@ -12,8 +12,16 @@ import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.graph.Network;
 
+/**
+ * ContetxBuilderBuilder that fills the Context with both Leaf Nodes and Ultra Nodes,
+ * with the ultras occupying an inner circle in continous space, and the leaves an
+ * outer circle
+ */
 public class UltraAndLeafBuilder extends ContextBuilderBuilder {
 
+	/* (non-Javadoc)
+	 * @see networkSimulation.config.ContextBuilderBuilder#build(repast.simphony.context.Context, repast.simphony.parameter.Parameters, repast.simphony.space.graph.Network, repast.simphony.space.graph.Network, repast.simphony.space.continuous.ContinuousSpace)
+	 */
 	@Override
 	public Context<FileSharingNode> build(Context<FileSharingNode> context,
 			Parameters params, Network<FileSharingNode> knownConnections,
