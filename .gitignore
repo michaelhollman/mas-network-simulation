@@ -38,3 +38,5 @@ thumbs.db
 .DS_Store
 .*.sw?
 Repast.settings
+
+*AggregateNetworkData*
