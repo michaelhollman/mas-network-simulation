@@ -1,7 +1,6 @@
 <repast.simphony.data2.engine.DataSetDescriptor>
-  <name>Non-Aggregate Network Data</name>
-  <type>NON_AGGREGATE</type>
-  <sourceType>networkSimulation.FileSharingNode</sourceType>
+  <name>Aggregate Network Data</name>
+  <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
   <inclRandomSeed>false</inclRandomSeed>
@@ -22,78 +21,88 @@
         <id>AvgFulfillmentTime</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getAvgFulfillmentTime</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>NumFulfilled</string>
+      <string>AvgNumFulfilled</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>NumFulfilled</id>
+        <id>AvgNumFulfilled</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getNumFulfilled</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>NumKnownFiles</string>
+      <string>AvgNumFilesKnown</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>NumKnownFiles</id>
+        <id>AvgNumFilesKnown</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getNumKnownFiles</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>NumKnownNodes</string>
+      <string>AvgNumNodesKnown</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>NumKnownNodes</id>
+        <id>AvgNumNodesKnown</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getNumKnownNodes</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>NumTimeouts</string>
+      <string>AvgNumTimeouts</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>NumTimeouts</id>
+        <id>AvgNumTimeouts</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getNumTimeouts</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>NumUnfulfilled</string>
+      <string>AvgNumUnfulfilled</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>NumUnfulfilled</id>
+        <id>AvgNumUnfulfilled</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getNumUnfulfilled</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>PercentFulfilled</string>
+      <string>AvgPercentFulfilled</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>PercentFulfilled</id>
+        <id>AvgPercentFulfilled</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getPercentFulfilled</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>WorkQueueSize</string>
+      <string>AvgWorkQueueSize</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>WorkQueueSize</id>
+        <id>AvgWorkQueueSize</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>getWorkQueueSize</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>Dead</string>
+      <string>NumDead</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Dead</id>
+        <id>NumDead</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>isDead</methodName>
+        <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>UltraNode</string>
+      <string>NumUltra</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>UltraNode</id>
+        <id>NumUltra</id>
         <className>networkSimulation.FileSharingNode</className>
         <methodName>isUltraNode</methodName>
+        <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>

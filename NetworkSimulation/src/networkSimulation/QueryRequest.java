@@ -92,10 +92,17 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
 
         while (!tempNodes.isEmpty()) {
             FileSharingNode last = tempNodes.pop();
-            if (tempNodes.isEmpty())
-                break;
-            FileSharingNode next = tempNodes.peek();
-            next.giveFileInfo(fileNumber, last.config.NodeIp);
+
+            if (GlobalContext.NodesLearnUltimateFileOwner) {
+                last.giveFileInfo(fileNumber, fulfiller.config.NodeIp);
+            }
+
+            if (GlobalContext.NodesLearnPathToFileOwner) {
+                if (tempNodes.isEmpty())
+                    break;
+                FileSharingNode next = tempNodes.peek();
+                next.giveFileInfo(fileNumber, last.config.NodeIp);
+            }
         }
 
         super.fulfill(fulfiller);
