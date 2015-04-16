@@ -6,10 +6,20 @@ import java.util.Vector;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.space.graph.RepastEdge;
 
+/**
+ * A request for a File
+ */
 public class QueryRequest extends AbstractRequest implements Cloneable {
 
+    /** The file number we're requesting. */
     public int fileNumber;
 
+    /**
+     * Instantiates a new request for a file in the network
+     *
+     * @param source the node initiating this request
+     * @param fileNumber the file number we're requesting
+     */
     public QueryRequest(FileSharingNode source, int fileNumber) {
         super(source);
         this.fileNumber = fileNumber;
@@ -17,6 +27,9 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
 
     public QueryRequest() {}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
@@ -36,10 +49,22 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
         return n;
     }
 
+    /**
+     * Checks if is the same as another request, used to prevent 
+     * duplicate requests from happening (no cycles)
+     *
+     * @param req the req
+     * @return true, if is equivalent to
+     */
     public boolean isEquivalentTo(QueryRequest req) {
         return fileNumber == req.fileNumber && startTick == req.startTick && sourceNode.equals(req.sourceNode);
     }
 
+    /**
+     * Adds a filesharing node as an intermediate node in this request
+     *
+     * @param intermediate the intermediate
+     */
     public void addIntermediate(FileSharingNode intermediate) {
         nodes.push(intermediate);
         double currentTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
@@ -47,6 +72,9 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
         lastInteractionTick = currentTick;
     }
     
+    /* (non-Javadoc)
+     * @see networkSimulation.AbstractRequest#bubbleUpTickInfo(boolean)
+     */
     protected void bubbleUpTickInfo(boolean didTimeout) {
     	super.bubbleUpTickInfo(didTimeout);
     	
@@ -54,6 +82,9 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
     	sourceNode.markUnfulfilled(timeoutTime);
     }
 
+    /* (non-Javadoc)
+     * @see networkSimulation.AbstractRequest#fulfill(networkSimulation.FileSharingNode)
+     */
     public void fulfill(FileSharingNode fulfiller) {
 
         @SuppressWarnings("unchecked")

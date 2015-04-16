@@ -12,9 +12,17 @@ import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.graph.Network;
 
+/**
+ * A simple ContextBuilderBuilder for testing purposes; uses some simple defaults.
+ */
 public class TestBuilder extends ContextBuilderBuilder {
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see networkSimulation.config.ContextBuilderBuilder#build(repast.simphony.context.Context, repast.simphony.parameter.Parameters, repast.simphony.space.graph.Network,
+     * repast.simphony.space.graph.Network, repast.simphony.space.continuous.ContinuousSpace)
+     */
     public Context<FileSharingNode> build(Context<FileSharingNode> context, Parameters params, Network<FileSharingNode> knownConnections, Network<FileSharingNode> currentConnections, ContinuousSpace<FileSharingNode> space) {
 
         // Parse parameters

@@ -13,25 +13,75 @@ import repast.simphony.random.RandomHelper;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 
+/**
+ * The FileSharingNode is the only agent type in our multi-agent system. Depending on the experiement setting, it may be configured the same or very different from other nodes in the network.
+ * 
+ * FileSharingNodes value getting the files they request quickly, and gaining information about other nodes in the network. They use this knowledge to optimize their decisions made while processing
+ * requests.
+ * 
+ * When a FileSharingNode is created, it knows nothing about the other nodes in the environment (other than the max IP address). When it starts desiring files, it needs to ping into the files sharing
+ * network first to find a node that can serve its request.
+ * 
+ * In our experiments, we broadly consider generic nodes (where they're configured roughly the same), and ultra peer and leaf nodes (which have very different configurations). These nodes are
+ * configured differently, and lead to very different network behavior.
+ */
 public class FileSharingNode {
 
+    /**
+     * The global network modeling known connections. We keep this up to date with our weighted knowledge of other nodes in the system. (better nodes have a highger weight)
+     */
     private Network<FileSharingNode> knownConnections;
+
+    /**
+     * The global network modeling current connections. We keep this up to date with request originating from this instance, and clear them when the request is complete. This allows us to visualize
+     * how requests propagate through the network
+     */
     private Network<FileSharingNode> currentConnections;
 
+    /** The configuration this node was given at creation. */
+    public NodeConfiguration config;
+
+    /**
+     * The first element of this nodes base knowledge, a map of FileNumber to a List of Nodes who are known to have that file
+     */
     private ConcurrentHashMap<Integer, ArrayList<Integer>> knownFileOwners;
+
     // <NodeIp>, <WeightedReponseTime ,NumberOfTimesChosen>
+    /**
+     * The second element of this node's base knowledge, a map of Node IP Address to their Weighted Time to Query Hit and Number of Times Chosen as the destination
+     */
     private ConcurrentHashMap<Integer, Tuple<Double, Integer>> nodeMap;
 
-    // Metrics
-    private int numTimeouts;
-    private int numUnfulfilled;
-    private int numFulfilled;
-    private double avgFulfillmentTime;
-
-    public NodeConfiguration config;
+    /** The files this node knows about */
     public Vector<Integer> knownFiles;
+
+    /** The current work queue. */
     public Vector<AbstractRequest> workQueue;
 
+    // Fields used as node metrics
+
+    /** The number of timeouts. */
+    private int numTimeouts;
+
+    /** The number of unfulfilled requests. */
+    private int numUnfulfilled;
+
+    /** The number of fulfilled requests. */
+    private int numFulfilled;
+
+    /** The average fulfillment time. */
+    private double avgFulfillmentTime;
+
+    /**
+     * Instantiates a new file sharing node.
+     * 
+     * @param knownConnections
+     *            the known connections
+     * @param currentConnections
+     *            the current connections
+     * @param configuration
+     *            the node configuration
+     */
     public FileSharingNode(Network<FileSharingNode> knownConnections, Network<FileSharingNode> currentConnections, NodeConfiguration configuration) {
         this.knownConnections = knownConnections;
         this.currentConnections = currentConnections;
@@ -42,12 +92,21 @@ public class FileSharingNode {
         nodeMap = new ConcurrentHashMap<Integer, Tuple<Double, Integer>>();
     }
 
+    /**
+     * Method that runs on each Repast tick and performs the basic logic for each node.
+     * 
+     * Each tick, a file sharing node follows the following basic logic: - If we should churn, change our state from Dead to alive (or vice versa) - Remove any finished or timedout work from our
+     * current work queue - If we're dead, finish - If we're alive, see if we should request a file this tick - If we do want to request a file, initiate a request and add it to our queue - Process as
+     * many items in our work queue as we can, given our connection limit
+     */
     @ScheduledMethod(start = 1, interval = 1)
     public void tick() {
 
+        // Randomly switch from dead to alive, with a probability configured via a parameter
         if (config.ChurnDistribution.getDecision()) {
             config.NodeState = config.NodeState == NodeState.DEAD ? NodeState.ALIVE : NodeState.DEAD;
 
+            // If we're dying, we need to wipe our knowledge
             if (config.NodeState == NodeState.DEAD) {
                 knownFileOwners = new ConcurrentHashMap<Integer, ArrayList<Integer>>();
                 knownFiles = new Vector<Integer>(config.StartingFiles);
@@ -78,10 +137,11 @@ public class FileSharingNode {
             req.removeFromNetwork(currentConnections);
         }
 
+        // Dead nodes can't do anything more
         if (config.NodeState == NodeState.DEAD)
             return;
 
-        // create and add new requests to the work queue
+        // create and add new requests to the work queue (governed by a probability)
         if ((workQueue.size() < config.SimultaneousConnectionLimit || GlobalContext.AllowSelfOverScheduling) && config.RequestDistribution.getDecision()) {
             Integer newFile = RandomUtil.getRandom(0, GlobalContext.FileCount - 1, knownFiles);
             if (newFile != null) {
@@ -90,7 +150,7 @@ public class FileSharingNode {
             }
         }
 
-        // process requests
+        // Process as many requests as we can given our connection limit
         LinkedList<AbstractRequest> finishedRequests = new LinkedList<AbstractRequest>();
         int numberOfRequestsToProcess = Math.min(config.SimultaneousConnectionLimit, workQueue.size());
         for (int i = 0; i < numberOfRequestsToProcess; i++) {
@@ -104,6 +164,12 @@ public class FileSharingNode {
         }
     }
 
+    /**
+     * Receives a ping from another node. The ping request is added to our work queue, and processed as soon as we have time
+     * 
+     * @param ping
+     *            the ping request
+     */
     public void ping(PingRequest ping) {
         if (ping.targetIP != config.NodeIp) {
             throw new RuntimeException("Ping sent to wrong node. Target=" + ping.targetIP + " Receiver=" + config.NodeIp);
@@ -112,6 +178,12 @@ public class FileSharingNode {
         ping.addEdge(currentConnections.addEdge(ping.sourceNode, this, AbstractRequest.CONNECTION_PING));
     }
 
+    /**
+     * Receives a query from another node for a file. The ping request is added to our work queue, and processed as soon as we have time
+     * 
+     * @param query
+     *            the file query
+     */
     public void query(QueryRequest query) {
         workQueue.add(query);
         FileSharingNode lastNode = query.nodes.peek();
@@ -119,6 +191,14 @@ public class FileSharingNode {
         query.addIntermediate(this);
     }
 
+    /**
+     * Receives a file from a request. This is called by the request on this node when a QueryRequest is fulfilled. We update our known files and metrics about fulfillment
+     * 
+     * @param fileNumber
+     *            the file number found
+     * @param fulfillmentTime
+     *            the ticks to fulfillment
+     */
     public void giveFile(int fileNumber, double fulfillmentTime) {
         if (!knownFiles.contains(fileNumber)) {
             knownFiles.add(fileNumber);
@@ -129,6 +209,14 @@ public class FileSharingNode {
         numFulfilled++;
     }
 
+    /**
+     * Receives information about a file from a request. This is called by the request on us when a QueryRequest is fulfilled. We use it to update our internal knowledge about who has files.
+     * 
+     * @param fileNumber
+     *            the file number found
+     * @param fileOwnerIp
+     *            the IP address of the node capable of getting this file
+     */
     public void giveFileInfo(int fileNumber, int fileOwnerIp) {
         if (fileOwnerIp == config.NodeIp)
             return;
@@ -145,31 +233,68 @@ public class FileSharingNode {
         knownFileOwners.put(fileNumber, owners);
     }
 
+    /**
+     * Receives information about a file request from a request. This is called by the request on us when a QueryRequest is fulfilled. We use it to update our internal knowledge about who is able to
+     * respond to QueryRequests quickly.
+     * 
+     * @param destinationIp
+     *            the destination ip
+     * @param ticks
+     *            the forward counted ticks (number of ticks it took from this node forward)
+     * @param didTimeout
+     *            if the request timed out
+     */
     public void giveResponseTimeInfo(int destinationIp, double ticks, boolean didTimeout) {
         if (destinationIp == config.NodeIp)
             return;
         addWeightToKnownConnection(destinationIp, ticks, didTimeout);
     }
 
+    /**
+     * Called on us when a request we initiated went unfulfilled. For now, this can only happen when the request times out.
+     * 
+     * @param timeoutTime
+     *            the timeout time
+     */
     public void markUnfulfilled(double timeoutTime) {
         numUnfulfilled++;
         numTimeouts++;
     }
 
-    // PUBLIC Data Collection Properties
+    // // PUBLIC Data Collection Properties
 
+    /**
+     * Gets the number of timeouts.
+     * 
+     * @return the number of timeouts
+     */
     public int getNumTimeouts() {
         return numTimeouts;
     }
 
+    /**
+     * Gets the number of unfulfilled requests.
+     * 
+     * @return the number of unfulfilled requests
+     */
     public int getNumUnfulfilled() {
         return numUnfulfilled;
     }
 
+    /**
+     * Gets the number of fulfilled requests.
+     * 
+     * @return the number of fulfilled requests
+     */
     public int getNumFulfilled() {
         return numFulfilled;
     }
 
+    /**
+     * Gets the percent of requests that have been fulfilled.
+     * 
+     * @return the percent of fulfilled requests
+     */
     public double getPercentFulfilled() {
         int denom = (numFulfilled + numUnfulfilled);
         if (denom == 0)
@@ -177,37 +302,80 @@ public class FileSharingNode {
         return (1.0 * numFulfilled) / denom;
     }
 
+    /**
+     * Gets the average fulfillment time.
+     * 
+     * @return the avgerage fulfillment time
+     */
     public double getAvgFulfillmentTime() {
         return avgFulfillmentTime;
     }
 
+    /**
+     * Gets the work queue size.
+     * 
+     * @return the work queue size
+     */
     public int getWorkQueueSize() {
         return workQueue.size();
     }
 
+    /**
+     * Gets the number of known files.
+     * 
+     * @return the number of known files
+     */
     public int getNumKnownFiles() {
         return knownFiles.size();
     }
 
+    /**
+     * Gets the number of known nodes.
+     * 
+     * @return the number known nodes
+     */
     public int getNumKnownNodes() {
         return nodeMap.size();
     }
 
+    /**
+     * Checks if this is an ultra node.
+     * 
+     * @return true, if this is an ultra node
+     */
     public boolean isUltraNode() {
         return config.NodeType == NodeType.ULTRA_PEER;
     }
 
+    /**
+     * Checks if this node is dead.
+     * 
+     * @return true, if we are dead
+     */
     public boolean isDead() {
         return config.NodeState == NodeState.DEAD;
     }
 
     // PRIVATE ---------------------------------------
 
+    /**
+     * Checks if this node has a particular file
+     * 
+     * @param fileNumber
+     *            the file number to check
+     * @return true, if we have the file indicated by fileNumber
+     */
     private boolean hasFile(int fileNumber) {
         return knownFiles.contains(fileNumber);
     }
 
-    // returns true if request has been finished and should be removed
+    /**
+     * Processes a request. Applies different logic depending on the type of request we're processing (Ping or Query)
+     * 
+     * @param req
+     *            the request to process
+     * @return true, if the request has been finished and should be removed
+     */
     private boolean processRequest(AbstractRequest req) {
         // handle race condition, force at least 1 tick wait
         if (req.sourceNode != this && req.needsToWaitOneTick()) {
@@ -224,11 +392,19 @@ public class FileSharingNode {
         throw new RuntimeException("processRequest didn't know what to do!");
     }
 
+    /**
+     * Processes a ping request. We simply fulfill the request immediately to indicate that we are alive in the network
+     * 
+     * @param ping
+     *            the ping
+     * @return true, if the request has been finished and should be removed
+     */
     private boolean processPing(PingRequest ping) {
         if (ping.sourceNode == this && !ping.fulfilled) {
-            // wait
+            // wait.
             return false;
         } else if (config.NodeIp == ping.targetIP && !ping.fulfilled) {
+            // No logic necessary; simply fulfill the request and return true
             ping.fulfill(this);
             return true;
         }
@@ -236,23 +412,39 @@ public class FileSharingNode {
         throw new RuntimeException("processPing didn't know what to do!");
     }
 
+    /**
+     * Processes a query for a file.
+     * 
+     * @param query
+     *            the file query
+     * @return true, if the request has been finished and should be removed
+     */
     private boolean processQuery(QueryRequest query) {
         if (query.fulfilled) {
+            // Query has already been fulfilled; ok to remove from queue
             return true;
         } else if (hasFile(query.fileNumber)) {
+            // We have this file; fulfill directly
             query.fulfill(this);
             return true;
         } else if (query.nodes.peek() == this) {
+            // We're the last node on the query stack. Need to pass it along to another node
+
+            // Use our internal heuristics to find a node to pass the query on to. Update our knowledge
+            // indicating that we took this path
             HashMap<QueryRequest, Integer> queriesAndDestinations = new HashMap<>();
             Integer nextNode = getIpToPassQueryTo(query, null);
             if (nextNode != null) {
                 queriesAndDestinations.put(query, nextNode);
             }
 
+            // create and add new requests to the work queue (governed by a probability)
             int desiredDupCount = RandomHelper.nextIntFromTo(0, config.RequestDuplicationLimit);
             int numberAdded = 0;
             while (numberAdded < desiredDupCount && workQueue.size() < config.SimultaneousConnectionLimit) {
                 numberAdded++;
+
+                // Clone the query, and get a node to pass the request on to
                 QueryRequest newQuery = (QueryRequest) query.clone();
                 ArrayList<Integer> ignores = new ArrayList<>(queriesAndDestinations.values());
                 nextNode = getIpToPassQueryTo(newQuery, ignores);
@@ -283,6 +475,15 @@ public class FileSharingNode {
         throw new RuntimeException("processRequest didn't know what to do!");
     }
 
+    /**
+     * Gets the ip to pass query to, using our heuristics
+     * 
+     * @param query
+     *            the query
+     * @param ignoreIps
+     *            the ips to ignore
+     * @return the ip to pass query to
+     */
     private Integer getIpToPassQueryTo(QueryRequest query, AbstractList<Integer> ignoreIps) {
         Integer fileNum = query.fileNumber;
         ArrayList<Integer> knownOwners = knownFileOwners.get(fileNum);
@@ -362,6 +563,16 @@ public class FileSharingNode {
         return nextNodeIp;
     }
 
+    /**
+     * Adds the weight to known connection map
+     * 
+     * @param ip
+     *            the ip
+     * @param weight
+     *            the weight
+     * @param timeout
+     *            the timeout
+     */
     private void addWeightToKnownConnection(int ip, double weight, boolean timeout) {
         Tuple<Double, Integer> nodeInfo = nodeMap.get(ip);
         if (nodeInfo == null) {
@@ -387,6 +598,12 @@ public class FileSharingNode {
         }
     }
 
+    /**
+     * Increment node choice count.
+     * 
+     * @param ip
+     *            the ip
+     */
     private void incrementNodeChoiceCount(int ip) {
         Tuple<Double, Integer> nodeInfo = nodeMap.get(ip);
         if (nodeInfo == null) {
@@ -397,6 +614,9 @@ public class FileSharingNode {
         }
     }
 
+    /**
+     * Start pinging things once we've requested files
+     */
     private void startPingingThingsIfNeeded() {
         boolean shouldPing = nodeMap == null || nodeMap.size() < config.PingThreshold;
         if (shouldPing && workQueue.size() < config.SimultaneousConnectionLimit) {
