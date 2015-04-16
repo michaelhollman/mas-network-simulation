@@ -10,4 +10,28 @@ Our simulation was built against Repast Simphony 2.2, and developed in Java usin
 - Open the `NetworkSimulation` project in Eclipse.  (This can be done from the File -> Import -> General -> Import Existing Projects into Workspace menu option)
 - In the PackageExplorer, open the `launchers` folder and select `NetworkSimulation Model.launch`.  Then, click the green Run button in Eclipse.  This will install the appropriate run configuration, and start the Repast GUI to run our models. 
 
+### Setting up the Model
+
+When the simulation is started from Eclipse, the Repast GUI appears.  The parameters pane offers a wide variety of options for configuring the setup of the model.  The Experiment Setting option lets you choose between test (basic), identical (all nodes the same), and ultraAndLeaf (nodes partitioned into two configurable classes) experiment settings.  These broad experiment settings control the structure of how nodes are configured.
+
+From there, you can can choose the configuration applied to each node.  These include: 
+- The number of files per node
+- The simulataneous connection limit
+- The probability of wanting to request a file
+- The churn rate
+- And many more. See the parameters window for all of them.
+
+For ease of testing, reasonable defaults are set.
+
+Clicking the Start button will start the simulation.  The **KnownAndCurrentConnections** pane visualizes the current state of the network:
+- Dead nodes have a red border
+- Ultra nodes are orange; all others are black
+- Light gray lines indicate total known connections
+- Green lines indicate current ping requests
+- Blue lines indicate current query requests
+
+The other panes provide well-labeled charts of data we're collecting from each node.  Unfortunately, Repast does not allow us to visualize Ultra Peer Nodes and Leaf node data differently, so we also dump all of the collected data to a .csv file after each run so we can process it in Excel.
+
 ### About the Simulation
+
+
