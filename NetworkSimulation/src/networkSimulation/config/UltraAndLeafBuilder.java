@@ -42,6 +42,7 @@ public class UltraAndLeafBuilder extends ContextBuilderBuilder {
         double ultraPingWeightingScalar = params.getDouble("pingWeightingScalarUltra");
         boolean nodesLearnUltimateFileOwner = params.getBoolean("nodesLearnFileOwner");
         boolean nodesLearnPathToFileOwner = params.getBoolean("nodesLearnNextInChain");
+        boolean allowSelfOverscheduling = params.getBoolean("allowSelfOverscheduling");
 
         // Initialize nodes
         ArrayList<FileSharingNode> ultras = new ArrayList<FileSharingNode>();
@@ -143,6 +144,7 @@ public class UltraAndLeafBuilder extends ContextBuilderBuilder {
         GlobalContext.IpLookup.addAll(leaves);
         GlobalContext.NodesLearnUltimateFileOwner = nodesLearnUltimateFileOwner;
         GlobalContext.NodesLearnPathToFileOwner = nodesLearnPathToFileOwner;
+        GlobalContext.AllowSelfOverScheduling = allowSelfOverscheduling;
 
         // Debug information
         System.out.println("Created " + nodeCount + " nodes.");

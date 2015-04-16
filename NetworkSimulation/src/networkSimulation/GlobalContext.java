@@ -9,4 +9,5 @@ public class GlobalContext {
     public static ArrayList<FileSharingNode> IpLookup;
     public static boolean NodesLearnUltimateFileOwner;
     public static boolean NodesLearnPathToFileOwner;
+    public static boolean AllowSelfOverScheduling;
 }

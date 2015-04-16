@@ -13,7 +13,7 @@
 		type="double" defaultValue="0.00001" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="ultraRequestRate" displayName="Request Rate (Ultra)"
-		type="double" defaultValue="0.0" isReadOnly="false"
+		type="double" defaultValue="0" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="connectionLimit" displayName="Connection Limit (Non-Ultra)"
 		type="int" defaultValue="2" isReadOnly="false"
@@ -22,20 +22,20 @@
 		type="int" defaultValue="90" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="startingFiles" displayName="Starting Files (Non-Ultra)"
-		type="int" defaultValue="25" isReadOnly="false"
+		type="int" defaultValue="50" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="ultraChurnRate" displayName="Churn Rate (Ultra)"
-		type="double" defaultValue="0.000001" isReadOnly="false"
+		type="double" defaultValue="0.00001" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="requestRate" displayName="Request Rate (Non-Ultra)"
-		type="double" defaultValue="0.2" isReadOnly="false"
+		type="double" defaultValue="0.02" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="experimentSetting" displayName="Experiment Setting"
 		type="java.lang.String" defaultValue="ultraAndLeaf" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 		values="test identical ultraAndLeaf " />
 	<parameter name="file_count" displayName="File Count" type="int"
-		defaultValue="500" isReadOnly="false"
+		defaultValue="3000" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="ultraStartingFiles" displayName="Starting Files (Ultra)"
 		type="int" defaultValue="0" isReadOnly="false"
@@ -44,7 +44,7 @@
 		type="double" defaultValue="0.2" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="timeout" displayName="Timeout (Ticks)" type="int"
-		defaultValue="20" isReadOnly="false"
+		defaultValue="25" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="nodesLearnFileOwner" displayName="Nodes Learn Ultimate File Owner"
 		type="boolean" defaultValue="false" isReadOnly="false"
@@ -56,7 +56,7 @@
 		type="int" defaultValue="3" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="pingThresholdUltra" displayName="Ping Limit (Ultra)"
-		type="int" defaultValue="3" isReadOnly="false"
+		type="int" defaultValue="8" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="alphaRate" displayName="Learning Rate (Alpha) (Non-Ultra)"
 		type="double" defaultValue="0.25" isReadOnly="false"
@@ -65,17 +65,20 @@
 		type="double" defaultValue="0.25" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="requestDuplicationUltra" displayName="Request Duplication Limit (Ultra)"
-		type="int" defaultValue="10" isReadOnly="false"
+		type="int" defaultValue="8" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="requestDuplication" displayName="Request Duplication Limit (Non-Ultra)"
-		type="int" defaultValue="1" isReadOnly="false"
+		type="int" defaultValue="0" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="pingWeightingScalar" displayName="Ping Weighting Scalar (from Non-Ultra)"
-		type="double" defaultValue="15.00" isReadOnly="false"
+		type="double" defaultValue="1.00" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="pingWeightingScalarUltra" displayName="Ping Weighting Scalar (from Ultra)"
-		type="double" defaultValue="5.00" isReadOnly="false"
+		type="double" defaultValue="1.00" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
+	<parameter name="allowSelfOverscheduling" displayName="Allow Nodes to Self-over-schedule"
+		type="boolean" defaultValue="false" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter" />
 </parameters>
 
 

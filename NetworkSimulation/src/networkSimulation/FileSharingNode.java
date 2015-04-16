@@ -21,7 +21,7 @@ public class FileSharingNode {
     private ConcurrentHashMap<Integer, ArrayList<Integer>> knownFileOwners;
     // <NodeIp>, <WeightedReponseTime ,NumberOfTimesChosen>
     private ConcurrentHashMap<Integer, Tuple<Double, Integer>> nodeMap;
-    
+
     // Metrics
     private int numTimeouts;
     private int numUnfulfilled;
@@ -82,7 +82,7 @@ public class FileSharingNode {
             return;
 
         // create and add new requests to the work queue
-        if (workQueue.size() < config.SimultaneousConnectionLimit && config.RequestDistribution.getDecision()) {
+        if ((workQueue.size() < config.SimultaneousConnectionLimit || GlobalContext.AllowSelfOverScheduling) && config.RequestDistribution.getDecision()) {
             Integer newFile = RandomUtil.getRandom(0, GlobalContext.FileCount - 1, knownFiles);
             if (newFile != null) {
                 QueryRequest newQuery = new QueryRequest(this, newFile);
@@ -123,9 +123,9 @@ public class FileSharingNode {
         if (!knownFiles.contains(fileNumber)) {
             knownFiles.add(fileNumber);
         }
-        
+
         // Update average and number of fulfilled
-        avgFulfillmentTime = (numFulfilled * avgFulfillmentTime + 1 * fulfillmentTime) / (1 + numFulfilled); 
+        avgFulfillmentTime = (numFulfilled * avgFulfillmentTime + 1 * fulfillmentTime) / (1 + numFulfilled);
         numFulfilled++;
     }
 
@@ -150,57 +150,56 @@ public class FileSharingNode {
             return;
         addWeightToKnownConnection(destinationIp, ticks, didTimeout);
     }
-    
 
-	public void markUnfulfilled(double timeoutTime) {
-		numUnfulfilled++;
-		numTimeouts++;		
-	}
-    
-    // // PUBLIC Data Collection Properties
-    
+    public void markUnfulfilled(double timeoutTime) {
+        numUnfulfilled++;
+        numTimeouts++;
+    }
+
+    // PUBLIC Data Collection Properties
+
     public int getNumTimeouts() {
-    	return numTimeouts;
+        return numTimeouts;
     }
-    
+
     public int getNumUnfulfilled() {
-    	return numUnfulfilled;
+        return numUnfulfilled;
     }
-    
+
     public int getNumFulfilled() {
-    	return numFulfilled;
+        return numFulfilled;
     }
-    
+
     public double getPercentFulfilled() {
-    	int denom = (numFulfilled + numUnfulfilled);
-    	if (denom == 0) return 0;    	
-    	return (1.0 * numFulfilled) / denom;
+        int denom = (numFulfilled + numUnfulfilled);
+        if (denom == 0)
+            return 0;
+        return (1.0 * numFulfilled) / denom;
     }
-    
+
     public double getAvgFulfillmentTime() {
-    	return avgFulfillmentTime;
+        return avgFulfillmentTime;
     }
-    
+
     public int getWorkQueueSize() {
-    	return workQueue.size();
+        return workQueue.size();
     }
-    
+
     public int getNumKnownFiles() {
-    	return knownFiles.size();
+        return knownFiles.size();
     }
-    
+
     public int getNumKnownNodes() {
-    	return nodeMap.size();
+        return nodeMap.size();
     }
-    
+
     public boolean isUltraNode() {
-    	return config.NodeType == NodeType.ULTRA_PEER;
+        return config.NodeType == NodeType.ULTRA_PEER;
     }
-    
+
     public boolean isDead() {
-    	return config.NodeState == NodeState.DEAD;
+        return config.NodeState == NodeState.DEAD;
     }
-    
 
     // PRIVATE ---------------------------------------
 
@@ -274,9 +273,7 @@ public class FileSharingNode {
                 incrementNodeChoiceCount(ip);
             }
 
-            if (nextNode == null || nodeMap == null || nodeMap.size() == 0) {
-                startPingingThingsIfNeeded();
-            }
+            startPingingThingsIfNeeded();
 
             return false;
         } else if (query.nodes.contains(this)) {
@@ -420,6 +417,5 @@ public class FileSharingNode {
             }
         }
     }
-
 
 }

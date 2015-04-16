@@ -32,6 +32,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
         double pingWeightingScalar = params.getDouble("pingWeightingScalar");
         boolean nodesLearnUltimateFileOwner = params.getBoolean("nodesLearnFileOwner");
         boolean nodesLearnPathToFileOwner = params.getBoolean("nodesLearnNextInChain");
+        boolean allowSelfOverscheduling = params.getBoolean("allowSelfOverscheduling");
 
         // Initialize nodes
         ArrayList<FileSharingNode> nodes = new ArrayList<FileSharingNode>();
@@ -88,6 +89,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
         GlobalContext.IpLookup = nodes;
         GlobalContext.NodesLearnUltimateFileOwner = nodesLearnUltimateFileOwner;
         GlobalContext.NodesLearnPathToFileOwner = nodesLearnPathToFileOwner;
+        GlobalContext.AllowSelfOverScheduling = allowSelfOverscheduling;
 
         // Debug information
         System.out.println("Created " + nodeCount + " nodes.");
