@@ -21,6 +21,12 @@ public class FileSharingNode {
     private ConcurrentHashMap<Integer, ArrayList<Integer>> knownFileOwners;
     // <NodeIp>, <WeightedReponseTime ,NumberOfTimesChosen>
     private ConcurrentHashMap<Integer, Tuple<Double, Integer>> nodeMap;
+    
+    // Metrics
+    private int numTimeouts;
+    private int numUnfulfilled;
+    private int numFulfilled;
+    private double avgFulfillmentTime;
 
     public NodeConfiguration config;
     public Vector<Integer> knownFiles;
@@ -113,10 +119,14 @@ public class FileSharingNode {
         query.addIntermediate(this);
     }
 
-    public void giveFile(int fileNumber) {
+    public void giveFile(int fileNumber, double fulfillmentTime) {
         if (!knownFiles.contains(fileNumber)) {
             knownFiles.add(fileNumber);
         }
+        
+        // Update average and number of fulfilled
+        avgFulfillmentTime = (numFulfilled * avgFulfillmentTime + 1 * fulfillmentTime) / (1 + numFulfilled); 
+        numFulfilled++;
     }
 
     public void giveFileInfo(int fileNumber, int fileOwnerIp) {
@@ -140,6 +150,57 @@ public class FileSharingNode {
             return;
         addWeightToKnownConnection(destinationIp, ticks, didTimeout);
     }
+    
+
+	public void markUnfulfilled(double timeoutTime) {
+		numUnfulfilled++;
+		numTimeouts++;		
+	}
+    
+    // // PUBLIC Data Collection Properties
+    
+    public int getNumTimeouts() {
+    	return numTimeouts;
+    }
+    
+    public int getNumUnfulfilled() {
+    	return numUnfulfilled;
+    }
+    
+    public int getNumFulfilled() {
+    	return numFulfilled;
+    }
+    
+    public double getPercentFulfilled() {
+    	int denom = (numFulfilled + numUnfulfilled);
+    	if (denom == 0) return 0;    	
+    	return (1.0 * numFulfilled) / denom;
+    }
+    
+    public double getAvgFulfillmentTime() {
+    	return avgFulfillmentTime;
+    }
+    
+    public int getWorkQueueSize() {
+    	return workQueue.size();
+    }
+    
+    public int getNumKnownFiles() {
+    	return knownFiles.size();
+    }
+    
+    public int getNumKnownNodes() {
+    	return nodeMap.size();
+    }
+    
+    public boolean isUltraNode() {
+    	return config.NodeType == NodeType.ULTRA_PEER;
+    }
+    
+    public boolean isDead() {
+    	return config.NodeState == NodeState.DEAD;
+    }
+    
 
     // PRIVATE ---------------------------------------
 
@@ -359,5 +420,6 @@ public class FileSharingNode {
             }
         }
     }
+
 
 }

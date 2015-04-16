@@ -15,21 +15,21 @@
   </editedStyles>
   <netStyles>
     <entry>
-      <string>currentConnections</string>
-      <string>networkSimulation.style.CurrentConnectionEdgeStyle</string>
-    </entry>
-    <entry>
       <string>knownConnections</string>
       <string>networkSimulation.style.KnownConnectionEdgeStyle</string>
+    </entry>
+    <entry>
+      <string>currentConnections</string>
+      <string>networkSimulation.style.CurrentConnectionEdgeStyle</string>
     </entry>
   </netStyles>
   <editedNetStyles>
     <entry>
-      <string>currentConnections</string>
+      <string>knownConnections</string>
       <null/>
     </entry>
     <entry>
-      <string>knownConnections</string>
+      <string>currentConnections</string>
       <null/>
     </entry>
   </editedNetStyles>
@@ -74,13 +74,6 @@
   </visualizationProperties>
   <projectionDescriptors>
     <entry>
-      <string>currentConnections</string>
-      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
-        <props/>
-      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-    </entry>
-    <entry>
       <string>knownConnections</string>
       <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
         <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
@@ -96,10 +89,6 @@
             <string>repast.simphony.visualization.continuous.ContinuousDecorator</string>
             <map>
               <entry>
-                <string>COLOR</string>
-                <int>-16777216</int>
-              </entry>
-              <entry>
                 <string>UNIT_SIZE</string>
                 <float>15.0</float>
               </entry>
@@ -107,10 +96,21 @@
                 <string>SHOW</string>
                 <boolean>false</boolean>
               </entry>
+              <entry>
+                <string>COLOR</string>
+                <int>-16777216</int>
+              </entry>
             </map>
           </entry>
         </props>
       </repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
+    </entry>
+    <entry>
+      <string>currentConnections</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
     </entry>
   </projectionDescriptors>
   <props/>

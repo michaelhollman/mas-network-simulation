@@ -46,6 +46,13 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
         nodeAddTimes.push(currentTick);
         lastInteractionTick = currentTick;
     }
+    
+    protected void bubbleUpTickInfo(boolean didTimeout) {
+    	super.bubbleUpTickInfo(didTimeout);
+    	
+    	double timeoutTime = timedOutTick - startTick;
+    	sourceNode.markUnfulfilled(timeoutTime);
+    }
 
     public void fulfill(FileSharingNode fulfiller) {
 
@@ -68,6 +75,8 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
         }
 
         super.fulfill(fulfiller);
-        sourceNode.giveFile(fileNumber);
+        
+        double fulfillmentTime = fulfilledTick - startTick;
+        sourceNode.giveFile(fileNumber, fulfillmentTime);
     }
 }

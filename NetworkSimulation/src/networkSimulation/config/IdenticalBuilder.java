@@ -21,8 +21,8 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
         int nodeCount = params.getInteger("node_count");
         int initialActive = params.getInteger("initialActive");
         int fileCount = params.getInteger("file_count");
-        int genericStartingFiles = params.getInteger("genericStartingFiles");
-        int genericConnectionLimit = params.getInteger("genericConnectionLimit");
+        int startingFiles = params.getInteger("startingFiles");
+        int connectionLimit = params.getInteger("connectionLimit");
         int timeout = params.getInteger("timeout");
         int pingThreshold = params.getInteger("pingThreshold");
         int requestDuplicationLimit = params.getInteger("requestDuplication");
@@ -46,7 +46,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
             configuration.NodeIp = ip;
             configuration.NodeState = isDead ? NodeState.DEAD : NodeState.ALIVE;
             configuration.NodeType = NodeType.GENERIC;
-            configuration.SimultaneousConnectionLimit = genericConnectionLimit;
+            configuration.SimultaneousConnectionLimit = connectionLimit;
             configuration.ChurnDistribution = new UniformDistribution(0, 1, 1 - churnRate);
             configuration.RequestDistribution = new UniformDistribution(0, 1, 1 - requestRate);
             configuration.StartingFiles = new ArrayList<Integer>();
@@ -56,7 +56,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
             configuration.PingWeightingScalar = pingWeightingScalar;
 
             // Allocate files
-            for (int i = 0; i < genericStartingFiles; i++) {
+            for (int i = 0; i < startingFiles; i++) {
                 int fileNum = randInt(0, fileCount - 1);
                 if (!configuration.StartingFiles.contains(fileNum)) {
                     configuration.StartingFiles.add(fileNum);

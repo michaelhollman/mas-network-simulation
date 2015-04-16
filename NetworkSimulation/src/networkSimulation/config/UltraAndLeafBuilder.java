@@ -25,15 +25,15 @@ public class UltraAndLeafBuilder extends ContextBuilderBuilder {
         double percentUltra = params.getDouble("percentUltra");
 
         int ultraStartingFiles = params.getInteger("ultraStartingFiles");
-        int leafStartingFiles = params.getInteger("leafStartingFiles");
+        int leafStartingFiles = params.getInteger("startingFiles");
         int ultraConnectionLimit = params.getInteger("ultraConnectionLimit");
-        int leafConnectionLimit = params.getInteger("leafConnectionLimit");
+        int leafConnectionLimit = params.getInteger("connectionLimit");
         int pingThreshold = params.getInteger("pingThreshold");
         int pingThresholdUltra = params.getInteger("pingThresholdUltra");
         int requestDuplicationLimit = params.getInteger("requestDuplication");
         int ultraRequestDuplicationLimit = params.getInteger("requestDuplicationUltra");
         double ultraChurnRate = params.getDouble("ultraChurnRate");
-        double leafChurnRate = params.getDouble("leafChurnRate");
+        double leafChurnRate = params.getDouble("churnRate");
         double ultraRequestRate = params.getDouble("ultraRequestRate");
         double leafRequestRate = params.getDouble("requestRate");
         double alphaLearningRate = params.getDouble("alphaRate");

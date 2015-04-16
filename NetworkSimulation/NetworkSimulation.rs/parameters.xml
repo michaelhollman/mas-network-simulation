@@ -9,26 +9,20 @@
 	<parameter name="node_count" displayName="Node Count" type="int"
 		defaultValue="100" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
-	<parameter name="churnRate" displayName="Churn Rate (Identical)"
+	<parameter name="churnRate" displayName="Churn Rate (Non-Ultra)"
 		type="double" defaultValue="0.00001" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="ultraRequestRate" displayName="Request Rate (Ultra)"
 		type="double" defaultValue="0.0" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
-	<parameter name="genericConnectionLimit" displayName="Connection Limit (Identical)"
-		type="int" defaultValue="10" isReadOnly="false"
+	<parameter name="connectionLimit" displayName="Connection Limit (Non-Ultra)"
+		type="int" defaultValue="2" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
-	<parameter name="leafChurnRate" displayName="Churn Rate (Leaf)"
-		type="double" defaultValue="0.00001" isReadOnly="false"
-		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="initialActive" displayName="Initial Active Nodes"
 		type="int" defaultValue="90" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
-	<parameter name="leafStartingFiles" displayName="Starting Files (Leaf)"
-		type="int" defaultValue="15" isReadOnly="false"
-		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
-	<parameter name="leafConnectionLimit" displayName="Connection Limit (Leaves)"
-		type="int" defaultValue="15" isReadOnly="fals"
+	<parameter name="startingFiles" displayName="Starting Files (Non-Ultra)"
+		type="int" defaultValue="25" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="ultraChurnRate" displayName="Churn Rate (Ultra)"
 		type="double" defaultValue="0.000001" isReadOnly="false"
@@ -41,7 +35,7 @@
 		converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 		values="test identical ultraAndLeaf " />
 	<parameter name="file_count" displayName="File Count" type="int"
-		defaultValue="100" isReadOnly="false"
+		defaultValue="500" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="ultraStartingFiles" displayName="Starting Files (Ultra)"
 		type="int" defaultValue="0" isReadOnly="false"
