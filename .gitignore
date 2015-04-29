@@ -40,3 +40,6 @@ thumbs.db
 Repast.settings
 
 *AggregateNetworkData*
+
+# temporarily ignoring output folder
+NetworkSimulation/output/
