@@ -79,6 +79,9 @@
 	<parameter name="allowSelfOverscheduling" displayName="Allow Nodes to Self-over-schedule"
 		type="boolean" defaultValue="false" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter" />
+	<parameter name="endTick" displayName=" Stop Tick" type="int"
+		defaultValue="10000" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 </parameters>
 
 
