@@ -28,7 +28,7 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
 
         // Parse parameters
         int nodeCount = params.getInteger("node_count");
-        int initialActive = params.getInteger("initialActive");
+        double percentInitialActive = params.getDouble("initialActivePercentage");
         int fileCount = params.getInteger("file_count");
         int startingFiles = params.getInteger("startingFiles");
         int connectionLimit = params.getInteger("connectionLimit");
@@ -45,8 +45,8 @@ public class IdenticalBuilder extends ContextBuilderBuilder {
 
         // Initialize nodes
         ArrayList<FileSharingNode> nodes = new ArrayList<FileSharingNode>();
-        int initialDead = nodeCount - initialActive;
-        int deadModulo = nodeCount / initialDead;
+        int initialDead = (int) Math.floor(nodeCount * (1 - percentInitialActive));
+        int deadModulo = initialDead != 0 ? nodeCount / initialDead : Integer.MAX_VALUE;
 
         for (int ip = 0; ip < nodeCount; ip++) {
             boolean isDead = ip % deadModulo == 0;
