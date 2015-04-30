@@ -16,9 +16,11 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
 
     /**
      * Instantiates a new request for a file in the network
-     *
-     * @param source the node initiating this request
-     * @param fileNumber the file number we're requesting
+     * 
+     * @param source
+     *            the node initiating this request
+     * @param fileNumber
+     *            the file number we're requesting
      */
     public QueryRequest(FileSharingNode source, int fileNumber) {
         super(source);
@@ -27,7 +29,9 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
 
     public QueryRequest() {}
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#clone()
      */
     @SuppressWarnings("unchecked")
@@ -50,10 +54,10 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
     }
 
     /**
-     * Checks if is the same as another request, used to prevent 
-     * duplicate requests from happening (no cycles)
-     *
-     * @param req the req
+     * Checks if is the same as another request, used to prevent duplicate requests from happening (no cycles)
+     * 
+     * @param req
+     *            the req
      * @return true, if is equivalent to
      */
     public boolean isEquivalentTo(QueryRequest req) {
@@ -62,8 +66,9 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
 
     /**
      * Adds a filesharing node as an intermediate node in this request
-     *
-     * @param intermediate the intermediate
+     * 
+     * @param intermediate
+     *            the intermediate
      */
     public void addIntermediate(FileSharingNode intermediate) {
         nodes.push(intermediate);
@@ -71,18 +76,24 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
         nodeAddTimes.push(currentTick);
         lastInteractionTick = currentTick;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see networkSimulation.AbstractRequest#bubbleUpTickInfo(boolean)
      */
     protected void bubbleUpTickInfo(boolean didTimeout) {
-    	super.bubbleUpTickInfo(didTimeout);
-    	
-    	double timeoutTime = timedOutTick - startTick;
-    	sourceNode.markUnfulfilled(timeoutTime);
+        super.bubbleUpTickInfo(didTimeout);
+
+        if (didTimeout) {
+            double timeoutTime = timedOutTick - startTick;
+            sourceNode.markUnfulfilled(timeoutTime);
+        }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see networkSimulation.AbstractRequest#fulfill(networkSimulation.FileSharingNode)
      */
     public void fulfill(FileSharingNode fulfiller) {
@@ -106,7 +117,7 @@ public class QueryRequest extends AbstractRequest implements Cloneable {
         }
 
         super.fulfill(fulfiller);
-        
+
         double fulfillmentTime = fulfilledTick - startTick;
         sourceNode.giveFile(fileNumber, fulfillmentTime);
     }

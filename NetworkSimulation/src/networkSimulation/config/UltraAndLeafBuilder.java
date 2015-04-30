@@ -25,7 +25,7 @@ public class UltraAndLeafBuilder extends ContextBuilderBuilder {
 
         // Parse parameters
         int nodeCount = params.getInteger("node_count");
-        int initialActive = params.getInteger("initialActive");
+        double percentInitialActive = params.getDouble("initialActivePercentage");
         int timeout = params.getInteger("timeout");
         int fileCount = params.getInteger("file_count");
         double percentUltra = params.getDouble("percentUltra");
@@ -53,14 +53,14 @@ public class UltraAndLeafBuilder extends ContextBuilderBuilder {
         // Initialize nodes
         ArrayList<FileSharingNode> ultras = new ArrayList<FileSharingNode>();
         ArrayList<FileSharingNode> leaves = new ArrayList<FileSharingNode>();
-        int initialDead = nodeCount - initialActive;
-        int deadModulo = nodeCount / initialDead;
+        int initialDead = (int) Math.floor(nodeCount * (1 - percentInitialActive));
+        int deadModulo = initialDead != 0 ? nodeCount / initialDead : Integer.MAX_VALUE;
         int numUltras = (int) Math.floor(nodeCount * percentUltra);
         System.out.println("Num Ultras: " + numUltras);
 
         // Create ultras
         for (int ip = 0; ip < numUltras; ip++) {
-            boolean isDead = ip % deadModulo == 0;
+            boolean isDead = (ip + 1) % deadModulo == 0;
 
             // Generic node configuration
             NodeConfiguration configuration = new NodeConfiguration();

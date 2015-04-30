@@ -8,49 +8,49 @@ import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 
 /**
- * Represents a request that can be made from one node to
- * another.  
+ * Represents a request that can be made from one node to another.
  */
 public abstract class AbstractRequest {
 
     /** The Constant CONNECTION_PING. */
     public final static int CONNECTION_PING = 1;
-    
+
     /** The Constant CONNECTION_QUERY. */
     public final static int CONNECTION_QUERY = 2;
 
     /** The source node of this request. */
     public FileSharingNode sourceNode;
-    
+
     /** The fulfiller of this request. */
     public FileSharingNode fulfiller;
-    
+
     /** The nodes involved in this request. */
     public Stack<FileSharingNode> nodes;
-    
-    /** The times nodes were added to the request.  Syncronized with nodes. */
+
+    /** The times nodes were added to the request. Syncronized with nodes. */
     protected Stack<Double> nodeAddTimes;
-    
+
     /** The tick this requested started */
     public double startTick;
-    
+
     /** If this request is fulfilled. */
     public boolean fulfilled;
-    
+
     /** The tick this request was fulfilled. */
     public double fulfilledTick;
-    
+
     /** If this request has timed out. */
     protected boolean timedOut;
-    
+
     /** The tick this request timed out. */
     public double timedOutTick;
-    
+
     /** The tick of the last time we interacted with this request. */
     protected double lastInteractionTick;
-    
-    /** The currentConnections network edges built up during this request.
-     * These get cleared when the request is resolved. */
+
+    /**
+     * The currentConnections network edges built up during this request. These get cleared when the request is resolved.
+     */
     protected Vector<RepastEdge<FileSharingNode>> edges;
 
     /**
@@ -60,8 +60,9 @@ public abstract class AbstractRequest {
 
     /**
      * Instantiates a new abstract request coming from a source
-     *
-     * @param source the FileSharingNode that initiated this request
+     * 
+     * @param source
+     *            the FileSharingNode that initiated this request
      */
     public AbstractRequest(FileSharingNode source) {
         sourceNode = source;
@@ -78,7 +79,7 @@ public abstract class AbstractRequest {
 
     /**
      * Checks if this request has timed out.
-     *
+     * 
      * @return true, if the request has timed out
      */
     public boolean checkTimeOut() {
@@ -97,8 +98,9 @@ public abstract class AbstractRequest {
 
     /**
      * Bubbles up information learned during the request to all involved nodes
-     *
-     * @param didTimeout if the request timed out
+     * 
+     * @param didTimeout
+     *            if the request timed out
      */
     protected void bubbleUpTickInfo(boolean didTimeout) {
         while (!nodes.empty()) {
@@ -112,24 +114,21 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Fulfills this request.  All information is then bubbled up back to
-     * involved nodes in the request stack.
-     *
-     * @param fulfiller the FileSharingNode that fulfilled this request
+     * Fulfills this request. All information is then bubbled up back to involved nodes in the request stack.
+     * 
+     * @param fulfiller
+     *            the FileSharingNode that fulfilled this request
      */
     protected void fulfill(FileSharingNode fulfiller) {
         this.fulfilled = true;
         this.fulfiller = fulfiller;
         this.fulfilledTick = RunEnvironment.getInstance().getCurrentSchedule().getTickCount();
         bubbleUpTickInfo(false);
-
-        // System.out.println("Request fulfilled from " + sourceNode.config.NodeIp + " to " + fulfiller.config.NodeIp + " in " + (fulfilledTick - startTick) + " ticks");
     }
 
     /**
-     * Checks if we need to wait a tick before processing this request,
-     * to ensure that Repast doesn't process this request on the wrong tick
-     *
+     * Checks if we need to wait a tick before processing this request, to ensure that Repast doesn't process this request on the wrong tick
+     * 
      * @return true, if we need to wait a tick
      */
     public boolean needsToWaitOneTick() {
@@ -138,10 +137,10 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Iterates over all of the connections involved in this request,
-     * and removes them from the currentConnections network passed int
-     *
-     * @param network the current connections request
+     * Iterates over all of the connections involved in this request, and removes them from the currentConnections network passed int
+     * 
+     * @param network
+     *            the current connections request
      */
     public void removeFromNetwork(Network<FileSharingNode> network) {
         if (edges == null)
@@ -156,8 +155,9 @@ public abstract class AbstractRequest {
 
     /**
      * Adds an edge representing this part of the request to the current connections network
-     *
-     * @param edge the current connections request
+     * 
+     * @param edge
+     *            the current connections request
      */
     public void addEdge(RepastEdge<FileSharingNode> edge) {
         if (edge == null)
