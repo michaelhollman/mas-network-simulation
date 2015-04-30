@@ -24,7 +24,7 @@
         name="ultraChurnRate"
         type="constant"
         constant_type="double"
-        value="0.05"></parameter>
+        value="0.0001"></parameter>
     <parameter
         name="allowSelfOverscheduling"
         type="constant"
@@ -34,7 +34,7 @@
         name="churnRate"
         type="constant"
         constant_type="double"
-        value="0.05"></parameter>
+        value="0.0001"></parameter>
     <parameter
         name="ultraConnectionLimit"
         type="constant"
