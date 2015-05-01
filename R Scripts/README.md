@@ -1,0 +1,1 @@
+This folder contains a helper R script used to generate the charts and visuals used in our final paper. It consumes the aggregated data fron the Data Parser C# app and creates various graphs and visuals. Note that it includes a lot of hard-coded values and file paths. It was used as an ad-hoc tool and is provided for completeness.
